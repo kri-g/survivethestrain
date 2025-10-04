@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survive the Strain - Malaria Crisis Simulation</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Intro Sequence -->
+        <div class="screen intro-screen active" id="introScreen">
+            <div class="intro-content">
+                <div class="location-card">
+                    <h1>📍 Kibera District, Kenya</h1>
+                    <p class="location-desc">Population: 250,000 • Rainy season: Peak transmission</p>
+                </div>
+
+                <div class="story-text" id="storyText">
+                    <p>The radio crackles to life at 6 AM. Another report of fever cases from the outskirts.</p>
+                </div>
+
+                <div class="character-intro">
+                    <div class="character-portrait">👨‍⚕️</div>
+                    <div class="character-info">
+                        <h2>Dr. Samuel Mwangi</h2>
+                        <p>You're the only doctor serving three villages. Your decisions will save lives—or create a crisis.</p>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-large pulse" id="beginMissionBtn">Accept the Challenge</button>
+            </div>
+        </div>
+
+        <!-- Main Game Interface -->
+        <div class="screen game-screen" id="gameScreen">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="status-label">Week</span>
+                    <span class="status-value" id="weekDisplay">1</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Medical Supplies</span>
+                    <span class="status-value">$<span id="budgetDisplay">150</span></span>
+                </div>
+                <div class="status-item village-status">
+                    <span class="status-label">Village Health</span>
+                    <div class="health-indicators">
+                        <div class="village-indicator" id="village1">🏘️</div>
+                        <div class="village-indicator" id="village2">🏘️</div>
+                        <div class="village-indicator" id="village3">🏘️</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crisis Alert System -->
+            <div class="alert-banner" id="alertBanner" style="display: none;">
+                <div class="alert-content">
+                    <span class="alert-icon">⚠️</span>
+                    <span class="alert-text" id="alertText"></span>
+                    <button class="alert-dismiss" onclick="dismissAlert()">×</button>
+                </div>
+            </div>
+
+            <!-- Main Game Area -->
+            <div class="game-main">
+                <!-- Left Panel: Current Situation -->
+                <div class="situation-panel">
+                    <div class="panel-header">
+                        <h3 id="situationTitle">Morning Report</h3>
+                        <div class="time-indicator" id="timeIndicator">🌅 Day 1</div>
+                    </div>
+
+                    <div class="situation-content" id="situationContent">
+                        <!-- Dynamic content will be loaded here -->
+                    </div>
+
+                    <!-- Decision Timer (for some scenarios) -->
+                    <div class="decision-timer" id="decisionTimer" style="display: none;">
+                        <div class="timer-bar">
+                            <div class="timer-fill" id="timerFill"></div>
+                        </div>
+                        <span class="timer-text">Critical decision - time remaining: <span id="timerText">30s</span></span>
+                    </div>
+                </div>
+
+                <!-- Right Panel: Actions & Information -->
+                <div class="action-panel">
+                    <div class="panel-tabs">
+                        <button class="tab-btn active" onclick="showTab('actions')">Actions</button>
+                        <button class="tab-btn" onclick="showTab('intel')">Intel</button>
+                        <button class="tab-btn" onclick="showTab('supplies')">Supplies</button>
+                    </div>
+
+                    <!-- Actions Tab -->
+                    <div class="tab-content active" id="actionsTab">
+                        <div class="actions-list" id="actionsList">
+                            <!-- Dynamic actions will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Intel Tab -->
+                    <div class="tab-content" id="intelTab">
+                        <div class="intel-content">
+                            <div class="resistance-tracker">
+                                <h4>🧬 Drug Resistance Alert</h4>
+                                <div class="resistance-meter">
+                                    <div class="meter-fill" id="resistanceMeter" style="width: 0%"></div>
+                                </div>
+                                <p class="resistance-level" id="resistanceText">Low Risk (0%)</p>
+                            </div>
+
+                            <div class="transmission-map">
+                                <h4>📊 Transmission Patterns</h4>
+                                <div class="map-grid">
+                                    <div class="map-cell" data-region="north">North</div>
+                                    <div class="map-cell" data-region="center">Center</div>
+                                    <div class="map-cell" data-region="south">South</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Supplies Tab -->
+                    <div class="tab-content" id="suppliesTab">
+                        <div class="inventory-grid" id="inventoryGrid">
+                            <!-- Inventory items will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Panel: Recent Events Log -->
+            <div class="events-log">
+                <div class="log-header">
+                    <h4>📰 Recent Events</h4>
+                    <button class="log-toggle" onclick="toggleLog()">⬇️</button>
+                </div>
+                <div class="log-content" id="eventLog">
+                    <div class="log-entry">
+                        <span class="log-time">6:00 AM</span>
+                        <span class="log-message">Started morning rounds in Kibera District</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Encounter Modal -->
+        <div class="modal patient-modal" id="patientModal">
+            <div class="modal-content">
+                <div class="patient-header">
+                    <div class="patient-info">
+                        <div class="patient-portrait" id="patientPortrait">👤</div>
+                        <div class="patient-details">
+                            <h3 id="patientName">Loading...</h3>
+                            <p id="patientAge"></p>
+                            <p id="patientOccupation"></p>
+                        </div>
+                    </div>
+                    <div class="patient-urgency" id="patientUrgency"></div>
+                </div>
+
+                <div class="patient-story" id="patientStory">
+                    <!-- Patient's story and symptoms will be displayed here -->
+                </div>
+
+                <div class="diagnostic-interface">
+                    <div class="diagnostic-options" id="diagnosticOptions">
+                        <!-- Diagnostic choices will be loaded here -->
+                    </div>
+
+                    <div class="diagnostic-result" id="diagnosticResult" style="display: none;">
+                        <!-- Test results will be shown here -->
+                    </div>
+
+                    <div class="treatment-options" id="treatmentOptions" style="display: none;">
+                        <!-- Treatment choices will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="patient-outcome" id="patientOutcome" style="display: none;">
+                    <!-- Treatment outcome will be shown here -->
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" id="skipPatientBtn" style="display: none;">Refer to District Hospital</button>
+                    <button class="btn btn-primary" id="continueBtn" style="display: none;">Continue</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategic Decision Modal -->
+        <div class="modal strategy-modal" id="strategyModal">
+            <div class="modal-content">
+                <div class="strategy-header">
+                    <h2 id="strategyTitle">Weekly Planning</h2>
+                    <p id="strategyContext"></p>
+                </div>
+
+                <div class="strategy-options" id="strategyOptions">
+                    <!-- Strategic options will be loaded here -->
+                </div>
+
+                <div class="resource-allocation">
+                    <h4>Resource Allocation</h4>
+                    <div class="allocation-sliders" id="allocationSliders">
+                        <!-- Budget allocation sliders will be here -->
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-success btn-large" id="confirmStrategyBtn">Implement Strategy</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crisis Event Modal -->
+        <div class="modal crisis-modal" id="crisisModal">
+            <div class="modal-content">
+                <div class="crisis-header">
+                    <div class="crisis-icon">🚨</div>
+                    <h2 id="crisisTitle">Crisis Event</h2>
+                </div>
+
+                <div class="crisis-description" id="crisisDescription">
+                    <!-- Crisis description will be loaded here -->
+                </div>
+
+                <div class="crisis-options" id="crisisOptions">
+                    <!-- Crisis response options will be loaded here -->
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-danger" id="crisisActionBtn">Respond to Crisis</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div class="modal game-over-modal" id="gameOverModal">
+            <div class="modal-content">
+                <div class="game-over-header">
+                    <div class="result-icon" id="resultIcon">🎯</div>
+                    <h2 id="gameOverTitle">Mission Complete</h2>
+                </div>
+
+                <div class="final-report" id="finalReport">
+                    <!-- Final game statistics and story will be here -->
+                </div>
+
+                <div class="achievements" id="achievementsList">
+                    <!-- Achievements earned will be displayed here -->
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-primary" id="playAgainBtn">New Mission</button>
+                    <button class="btn btn-secondary" id="shareResultsBtn">Share Results</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutorial Overlay -->
+        <div class="tutorial-overlay" id="tutorialOverlay" style="display: none;">
+            <div class="tutorial-content">
+                <h3 id="tutorialTitle">Getting Started</h3>
+                <p id="tutorialText"></p>
+                <button class="btn btn-primary" id="tutorialNextBtn">Got it</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
