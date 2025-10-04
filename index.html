@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survive the Strain - Malaria Control Strategy Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header with game status -->
+        <header class="game-header">
+            <div class="header-content">
+                <h1>🦠 Survive the Strain</h1>
+                <div class="game-status">
+                    <div class="week-counter">Week <span id="currentWeek">1</span>/12</div>
+                    <div class="budget-display">Budget: $<span id="currentBudget">100</span></div>
+                </div>
+            </div>
+
+            <!-- Critical Meters -->
+            <div class="meters-container">
+                <div class="meter">
+                    <div class="meter-header">
+                        <span class="meter-label">📊 Active Cases</span>
+                        <span class="meter-value" id="casesValue">0</span>
+                    </div>
+                    <div class="meter-bar">
+                        <div class="meter-fill cases-fill" id="casesFill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="meter">
+                    <div class="meter-header">
+                        <span class="meter-label">🧬 Drug Resistance</span>
+                        <span class="meter-value" id="resistanceValue">0%</span>
+                    </div>
+                    <div class="meter-bar">
+                        <div class="meter-fill resistance-fill" id="resistanceFill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Welcome Screen -->
+        <div class="screen welcome-screen active" id="welcomeScreen">
+            <div class="welcome-content">
+                <div class="welcome-hero">
+                    <h2>🏥 Welcome, Public Health Officer</h2>
+                    <p>You're managing malaria control in an endemic region. Your mission: Keep cases low and prevent drug resistance for 12 weeks.</p>
+                </div>
+
+                <div class="difficulty-selection">
+                    <h3>Choose Your Challenge</h3>
+                    <div class="difficulty-options">
+                        <button class="difficulty-btn" data-difficulty="easy">
+                            <span class="difficulty-title">🌱 Training Mode</span>
+                            <span class="difficulty-desc">Higher budget, clearer outcomes</span>
+                        </button>
+                        <button class="difficulty-btn selected" data-difficulty="medium">
+                            <span class="difficulty-title">⚖️ Standard WHO Resources</span>
+                            <span class="difficulty-desc">Realistic resource constraints</span>
+                        </button>
+                        <button class="difficulty-btn" data-difficulty="hard">
+                            <span class="difficulty-title">🔥 Crisis Mode</span>
+                            <span class="difficulty-desc">Limited resources, complex cases</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-large" id="startGameBtn">Begin Mission</button>
+            </div>
+        </div>
+
+        <!-- Main Game Screen -->
+        <div class="screen game-screen" id="gameScreen">
+            <!-- Patient Queue -->
+            <div class="patient-queue" id="patientQueue">
+                <h3>📋 Patient Queue</h3>
+                <div class="queue-list" id="queueList"></div>
+            </div>
+
+            <!-- Current Patient -->
+            <div class="current-patient" id="currentPatient">
+                <div class="patient-card">
+                    <div class="patient-header">
+                        <span class="patient-name" id="patientName">Loading...</span>
+                        <span class="patient-age" id="patientAge"></span>
+                    </div>
+                    <div class="patient-symptoms" id="patientSymptoms"></div>
+                    <div class="patient-history" id="patientHistory"></div>
+                </div>
+
+                <!-- Diagnostic Phase -->
+                <div class="action-phase diagnostic-phase active" id="diagnosticPhase">
+                    <h4>🔬 Diagnostic Decision</h4>
+                    <div class="action-options">
+                        <button class="action-btn" id="rdtBtn">
+                            <div class="action-header">
+                                <span class="action-title">Rapid Diagnostic Test (RDT)</span>
+                                <span class="action-cost">$5</span>
+                            </div>
+                            <div class="action-desc">95% accuracy, definitive diagnosis</div>
+                        </button>
+                        <button class="action-btn" id="presumptiveBtn">
+                            <div class="action-header">
+                                <span class="action-title">Presumptive Diagnosis</span>
+                                <span class="action-cost">Free</span>
+                            </div>
+                            <div class="action-desc">Based on symptoms only, less accurate</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Treatment Phase -->
+                <div class="action-phase treatment-phase" id="treatmentPhase">
+                    <h4>💊 Treatment Decision</h4>
+                    <div class="diagnostic-result" id="diagnosticResult"></div>
+                    <div class="action-options" id="treatmentOptions"></div>
+                </div>
+
+                <!-- Patient Outcome -->
+                <div class="patient-outcome" id="patientOutcome"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="game-controls">
+                <button class="btn btn-secondary" id="skipPatientBtn" style="display: none;">Skip Patient</button>
+                <button class="btn btn-primary" id="nextPatientBtn" style="display: none;">Next Patient</button>
+                <button class="btn btn-success" id="endWeekBtn" style="display: none;">End Week & Deploy Resources</button>
+            </div>
+        </div>
+
+        <!-- Resource Allocation Screen -->
+        <div class="screen resource-screen" id="resourceScreen">
+            <div class="resource-content">
+                <h2>📋 Weekly Resource Allocation</h2>
+                <div class="week-summary" id="weekSummary"></div>
+
+                <div class="resource-options">
+                    <div class="resource-category">
+                        <h3>🛡️ Prevention Interventions</h3>
+                        <div class="resource-grid" id="preventionGrid"></div>
+                    </div>
+
+                    <div class="resource-category">
+                        <h3>🎯 Community Programs</h3>
+                        <div class="resource-grid" id="programGrid"></div>
+                    </div>
+                </div>
+
+                <div class="allocation-summary">
+                    <div class="budget-remaining">Remaining Budget: $<span id="remainingBudget">0</span></div>
+                    <button class="btn btn-success btn-large" id="confirmAllocationBtn">Confirm & Start Next Week</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div class="screen game-over-screen" id="gameOverScreen">
+            <div class="game-over-content">
+                <div class="game-result" id="gameResult"></div>
+                <div class="final-stats" id="finalStats"></div>
+                <div class="educational-reflection" id="educationalReflection"></div>
+                <button class="btn btn-primary btn-large" id="playAgainBtn">Play Again</button>
+            </div>
+        </div>
+
+        <!-- Educational Pop-ups -->
+        <div class="modal" id="educationalModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Did You Know?</h3>
+                    <button class="modal-close" id="modalClose">×</button>
+                </div>
+                <div class="modal-body" id="modalBody"></div>
+                <div class="modal-footer">
+                    <span class="modal-source" id="modalSource"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
