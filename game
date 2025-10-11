@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Malaria Heroes</title>
+<!-- Load fonts for professional look -->
+<link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet"/>
+</head>
+<style>
+body {
+  font-family: 'Nunito', sans-serif; 
+  background: #f0f4f8;
+  margin: 0;
+  padding: 0;
+}
+#topbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+#language-btn {
+  padding: 8px 12px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#game-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  position: relative;
+}
+#mission-area {
+  border: 2px solid #ccc;
+  padding: 15px;
+  min-height: 400px;
+  background: #fff;
+  border-radius: 8px;
+}
+#feedback {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 6px;
+  background: #e9ecef;
+}
+#progress {
+  margin-top: 15px;
+}
+button {
+  padding: 10px 15px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1em;
+  margin-top: 10px;
+  cursor: pointer;
+}
+input[type=text] {
+  padding: 8px;
+  width: 200px;
+  font-family: 'Nunito', sans-serif;
+}
+#certificate {
+  display: none;
+  padding: 20px;
+  border: 3px solid #333;
+  border-radius: 10px;
+  background: #fff;
+}
+#certificate h2 {
+  text-align: center;
+}
+#certificate placehoder {
+  margin-top: 20px;
+  text-align: center;
+}
+</style>
+<body>
+
+<div id="topbar">
+  <button id="language-btn">हिन्दी</button>
+</div>
+<div id="game-container">
+  <h1 style="text-align:center;">🦟 Malaria Heroes</h1>
+  <div id="mission-area"></div>
+  <div id="feedback"></div>
+  <div id="progress"></div>
+  <button id="next-btn" style="display:none;">Next Mission</button>
+</div>
+
+<!-- Popup modal for final certificate -->
+<div id="final-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+  <div style="background:#fff; padding:20px; border-radius:10px; max-width:500px; width:90%; text-align:center;">
+    <h2 id="final-title"></h2>
+    <div>
+      <label>Enter your name: </label>
+      <input type="text" id="player-name"/>
+    </div>
+    <button onclick="generateCertificate()">Download Certificate</button>
+    <button onclick="closeFinalModal()">Close</button>
+  </div>
+</div>
+<!-- Canvas for certificate -->
+<canvas id="certificate-canvas" style="display:none;"></canvas>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+// Translations
+const translations = {
+  en: {
+    langBtn: "हिन्दी",
+    title: "🦟 Malaria Heroes",
+    next: "Next Mission",
+    finalTitle: "Congratulations! You Completed All Missions!",
+    enterName: "Enter your name:",
+    downloadCert: "Download Certificate",
+    missionClinic: "Clinical Diagnosis Mission",
+    missionSchool: "Bed Net Distribution",
+    missionMarket: "Health Education Campaign",
+    missionHomes: "Mosquito Breeding Investigation",
+    successMsg: "Well done! Proceed to the next mission.",
+    attemptMsg: "Maximum attempts reached! Focus on remaining sites.",
+    helpMsg: "Scientific hints are now available. Use them to find remaining breeding sites.",
+    correct: "✅ Correct!",
+    wrong: "❌ Wrong.",
+    selectSymptoms: "Select symptoms that match malaria signs.",
+    selectSites: "Identify actual mosquito breeding sites.",
+    selectProtection: "Choose effective prevention methods.",
+    symptomFever: "Fever",
+    symptomHeadache: "Headache",
+    symptomChills: "Chills",
+    symptomNausea: "Nausea",
+    symptomFatigue: "Fatigue",
+    siteWaterTank: "Water Tank",
+    sitePuddle: "Puddle",
+    siteTires: "Discarded Tires",
+    sitePlantPot: "Plant Saucers",
+    siteDrain: "Flowing Drain",
+    siteStream: "Nearby Stream",
+    approachInfo: "Effective prevention methods include using bed nets, eliminating stagnant water, and community cleanup.",
+    // ... add more translations as needed
+  },
+  hi: {
+    langBtn: "English",
+    title: "🦟 मलेरिया हीरोज",
+    next: "अगली मिशन",
+    finalTitle: "बधाई हो! आप सभी मिशन पूरे कर चुके हैं!",
+    enterName: "अपना नाम दर्ज करें:",
+    downloadCert: "प्रमाणपत्र डाउनलोड करें",
+    missionClinic: "क्लिनिक निदान अभियान",
+    missionSchool: "बेड नेट वितरण",
+    missionMarket: "स्वास्थ्य शिक्षा अभियान",
+    missionHomes: "मच्छर प्रजनन स्थल investigation",
+    successMsg: "शानदार! अगले मिशन पर जाएं।",
+    attemptMsg: "मैक्सिमम प्रयास पूरे हो गए! शेष स्थानों पर ध्यान केंद्रित करें।",
+    helpMsg: "वैज्ञानिक संकेत अब उपलब्ध हैं। उनका उपयोग करें।",
+    correct: "✅ सही!",
+    wrong: "❌ गलत।",
+    selectSymptoms: "मलेरिया के संकेतों से मेल खाते लक्षण चुनें।",
+    selectSites: "वास्तविक मच्छर प्रजनन स्थल पहचानें।",
+    selectProtection: "प्रभावी रोकथाम विधि चुनें।",
+    symptomFever: "बुखार",
+    symptomHeadache: "तेज सिरदर्द",
+    symptomChills: "कंपकंपी और पसीना",
+    symptomNausea: "मतली",
+    symptomFatigue: "थकान",
+    siteWaterTank: "पानी का टैंक",
+    sitePuddle: "गड्ढा",
+    siteTires: "फेंके गए टायर",
+    sitePlantPot: "प्लांट सॉकर",
+    siteDrain: "फ्लोइंग ड्रेन",
+    siteStream: "पानी का स्रोत",
+    approachInfo: "प्रभावी रोकथाम के लिए बिस्तर की जाल, स्थैतिक पानी को समाप्त करना, और समुदाय सफाई शामिल हैं।",
+    // ... add more translations as needed
+  }
+};
+let currentLang = 'en';
+
+// Utility for translation
+function t(key) {
+  return translations[currentLang][key] || key;
+}
+
+// State variables
+let gameStage = 0; // 0 to 4 for four missions
+let wrongAttempts = 0;
+const MAX_WRONG_ATTEMPTS = 3;
+let helpShown = false;
+let languageBtn = document.getElementById('language-btn');
+let missionDiv = document.getElementById('mission-area');
+let feedbackDiv = document.getElementById('feedback');
+let progressDiv = document.getElementById('progress');
+let nextBtn = document.getElementById('next-btn');
+
+function toggleLanguage() {
+  if(currentLang==='en'){
+    currentLang='hi';
+    languageBtn.innerText='English';
+  }else{
+    currentLang='en';
+    languageBtn.innerText='हिन्दी';
+  }
+  loadMission();
+}
+
+languageBtn.onclick=toggleLanguage;
+
+// Initialize first mission
+loadMission();
+
+// Function to load mission based on stage
+function loadMission() {
+  feedbackDiv.innerHTML='';
+  document.getElementById('next-btn').style.display='none';
+  switch(gameStage){
+    case 0:
+      loadClinic();
+      break;
+    case 1:
+      loadSchool();
+      break;
+    case 2:
+      loadMarket();
+      break;
+    case 3:
+      loadHomes();
+      break;
+    case 4:
+      showFinalCertificate();
+      break;
+  }
+}
+
+function showProgress() {
+  progressDiv.innerHTML=`मिशन ${gameStage} से ${4} तक`; // 4 missions total
+}
+
+// CLINIC FUNCTION
+function loadClinic() {
+  missionDiv.innerHTML=`
+    <h2>${t('missionClinic')}</h2>
+    <p>Kojo को 2 दिनों से बुखार और सिरदर्द की शिकायत है। नीचे उनके लक्षण चुनें।</p>
+    <input type="checkbox" id="symptomF" /> <label for="symptomF">${t('symptomFever')}</label><br/>
+    <input type="checkbox" id="symptomH" /> <label for="symptomH">${t('symptomHeadache')}</label><br/>
+    <input type="checkbox" id="symptomC" /> <label for="symptomC">${t('symptomChills')}</label><br/>
+    <input type="checkbox" id="symptomN" /> <label for="symptomN">${t('symptomNausea')}</label><br/>
+    <input type="checkbox" id="symptomFAt" /> <label for="symptomFAt">${t('symptomFatigue')}</label><br/>
+    <button onclick="checkClinic()">Submit</button>`;
+  feedbackDiv.innerHTML='';
+  wrongAttempts=0;
+  helpShown=false;
+  showProgress();
+}
+
+// CLINIC CHECK
+function checkClinic() {
+  let selF = document.getElementById('symptomF').checked;
+  let selH = document.getElementById('symptomH').checked;
+  let selC = document.getElementById('symptomC').checked;
+  let selN = document.getElementById('symptomN').checked;
+  let selFAt = document.querySelector('#symptomFAt').checked;
+
+  // Correct signs for malaria:
+  // Fever, Headache, Chills, Fatigue are typical. Nausea is less specific.
+  let correctSigns = {
+    fever: selF,
+    headache: selH,
+    chills: selC,
+    fatigue: selFAt
+  };
+  let correctSelected = correctSigns.fever && correctSigns.headache && correctSigns.chills && correctSigns.fatigue;
+
+  // Wrong selections:
+  let wrongSigns = [];
+  if (selN) wrongSigns.push(t('symptomNausea'));
+  if (!selF) wrongSigns.push(t('symptomF'));
+  if (!selH) wrongSigns.push(t('symptomH'));
+  if (!selC) wrongSigns.push(t('symptomC'));
+  if (!selFAt) wrongSigns.push(t('symptomFAt'));
+
+  if (correctSelected && wrongSigns.length===0) {
+    feedbackDiv.innerHTML=`<p style="color:green;">${t('correct')} | Malaria के लक्षण सही हैं।</p>`;
+    nextBtn.style.display='block'; nextBtn.onclick=nextMission;
+  } else {
+    wrongAttempts++;
+    feedbackDiv.innerHTML=`<p style="color:red;">${t('wrong')}<br/>${wrongSigns.length>0 ? wrongSigns.join(', ') : ''}</p>`;
+    if (wrongAttempts>=MAX_WRONG_ATTEMPTS && !helpShown) {
+      showHelpHint('clinic');
+    }
+  }
+}
+
+// SCHOOL
+function loadSchool() {
+  let html=`
+    <h2>${t('missionSchool')}</h2>
+    <p>आपके पास 12 बिस्तर हैं, और केवल 7 जाल उपलब्ध हैं। कृपया बच्चों की उम्र (छोटे बच्चे) और जोखिम वाले स्थानों को प्राथमिकता देकर सुरक्षित करें।</p>
+    <div id="beds-container" style="display:flex; flex-wrap:wrap;">`;
+  for (let i=1;i<=12;i++){
+    html+=`<div style="margin:8px; padding:8px; border:1px solid #aaa; border-radius:4px;">
+      <p>बेड ${i} (आयु: ${i<=4?'छोटा':'बड़ा'})</p>
+      <button onclick="protectBed(${i})" id="bed${i}">जाल लगाओ</button>
+      <div id="status${i}"></div>
+    </div>`;
+  }
+  html+=`</div>
+    <button onclick="submitSchool()">समीक्षा करें</button>`;
+  missionDiv.innerHTML=html;
+  window.bedProtectionStatus = Array(13).fill(false);
+  wrongAttempts=0;
+  helpShown=false;
+  showProgress();
+}
+
+function protectBed(i){
+  if (window.bedProtectionStatus[i]) return;
+  window.bedProtectionStatus[i]=true;
+  document.getElementById('status'+i).innerText='सुरक्षित';
+}
+
+function submitSchool() {
+  const protectedCount = window.bedProtectionStatus.filter(p=>p).length;
+  let correct = protectedCount>=7; // assume good protection if >=7 beds protected
+  if (correct) {
+    feedbackDiv.innerHTML=`<p style="color:green;">${t('correct')} | सभी बच्चों को जाल लगाना जरूरी है।</p>`;
+    nextBtn.style.display='block'; nextBtn.onclick=nextMission;
+  } else {
+    wrongAttempts++;
+    feedbackDiv.innerHTML=`<p style="color:red;">${t('wrong')} | अभी ${protectedCount} जाल लगाए गए हैं।</p>`;
+    if (wrongAttempts>=MAX_WRONG_ATTEMPTS && !helpShown){
+      showHelpHint('school');
+    }
+  }
+}
+
+// MARKET
+function loadMarket() {
+  let html=`
+    <h2>${t('missionMarket')}</h2>
+    <p>यहाँ मार्केट के पानी के कंटेनर की सफाई करें। केवल गंदे कंटेनर ही प्रजनन स्थल हैं।</p>`;
+  const sites=['Water Tank','Puddle','Tires','Plant Saucers','Drain','Stream'];
+  const hinder=["Cleaned water","Clear puddle","Tires discarded","Plants watered","Drain flowing","Stream flowing"];
+  const decoys=["Tree base","Dry ground","Empty container","Birdbath","Flowing river","Rock"];
+  let items=sites.concat(decoys);
+  let btns='';
+  for (let i=0; i<items.length;i++){
+    btns+=`<button onclick="cleanSite('${items[i]}')">${items[i]}</button>`;
+  }
+  html+=btns;
+  html+=`<br/><button onclick="submitMarket()">समीक्षा करें</button>`;
+  missionDiv.innerHTML=html;
+  window.cleanedSites={}; // keep track
+  wrongAttempts=0;
+  helpShown=false;
+  showProgress();
+}
+function cleanSite(name){
+  window.cleanedSites[name]=true;
+  document.querySelectorAll(`button`).forEach(b=>{
+    if (b.innerText===name && !b.disabled){
+      b.style.background='lightgreen';
+      b.disabled=true;
+    }
+  });
+}
+
+function submitMarket() {
+  let validSites=['Water Tank','Puddle','Tires','Plant Saucers','Drain','Stream'];
+  const cleanedCount = Object.keys(window.cleanedSites).filter(s=>validSites.includes(s)).length;
+  if (cleanedCount>=4) {
+    feedbackDiv.innerHTML=`<p style="color:green;">${t('correct')} | पर्याप्त साफ-सफाई हुई है।</p>`;
+    nextBtn.style.display='block'; nextBtn.onclick=nextMission;
+  } else {
+    wrongAttempts++;
+    feedbackDiv.innerHTML=`<p style="color:red;">${t('wrong')} | अभी भी ${4 - cleanedCount} स्थल अनसाफ हैं।</p>`;
+    if (wrongAttempts>=MAX_WRONG_ATTEMPTS && !helpShown) {
+      showHelpHint('market');
+    }
+  }
+}
+
+// HOMES
+function loadHomes() {
+  // Generate 8 locations, 4 breeding sites + 4 decoys
+  let sites=[
+    {name: t('siteWaterTank'), real:true},
+    {name: t('sitePuddle'), real:true},
+    {name: t('siteTires'), real:true},
+    {name: t('sitePlantPot'), real:true},
+    {name: "Old Bottle", real:false},
+    {name: "Broken Tire", real:false},
+    {name: "Dry Leaves", real:false},
+    {name: "Disused Container", real:false},
+  ];
+  // shuffle
+  sites.sort(()=>Math.random()-0.5);
+  let html='<h2>घर में प्रजनन स्थल खोजें</h2><p>सही स्थानों पर क्लिक करें।</p><div style="display:flex; flex-wrap:wrap;">';
+  sites.forEach((site,i)=>{
+    html+=`<button id="homebtn${i}" style="margin:8px; padding:8px;" onclick="checkBreedingSite('${site.name}',${site.real?1:0},${i})">${site.name}</button>`;
+  });
+  html+='</div><button onclick="submitHomes()">समीक्षा करें</button>';
+  missionDiv.innerHTML=html;
+  window.homeSites=sites;
+  wrongAttempts=0;
+  helpShown=false;
+  showProgress();
+}
+
+// check breeding site
+function checkBreedingSite(name, isReal, idx){
+  // allow multiple attempts
+  if (document.getElementById('homebtn'+idx).disabled) return;
+  if (isReal===1){
+    // correct
+    document.getElementById('homebtn'+idx).disabled=true;
+    document.getElementById('homebtn'+idx).innerText=name+" ✔️";
+  } else {
+    // incorrect
+    document.getElementById('homebtn'+idx).disabled=true;
+    document.getElementById('homebtn'+idx).innerText=name+" ✖️";
+  }
+}
+
+// Submit homes
+function submitHomes() {
+  let correctCount=0;
+  window.homeSites.forEach((site,i)=>{
+    const btn=document.getElementById('homebtn'+i);
+    if (btn.innerText.includes('✔️')){
+      if (site.real){correctCount++;}
+    }
+  });
+  if (correctCount>=4){ 
+    feedbackDiv.innerHTML=`<p style="color:green;">${t('correct')} | अच्छा! आपने सही स्थान खोज लिए।</p>`;
+    nextBtn.style.display='block'; nextBtn.onclick=nextMission;
+  } else {
+    wrongAttempts++;
+    feedbackDiv.innerHTML=`<p style="color:red;">${t('wrong')} | आप ने ${correctCount} सही स्थान खोजे हैं।</p>`;
+    if (wrongAttempts>=MAX_WRONG_ATTEMPTS && !helpShown){
+      showHelpHint('homes');
+    }
+  }
+}
+
+// Show help hint
+function showHelpHint(location) {
+  helpShown=true;
+  alert(t('helpMsg'));
+}
+
+// Next mission
+function nextMission() {
+  gameStage++;
+  loadMission();
+}
+
+// FINAL with certificate
+function showFinalCertificate() {
+  document.getElementById('mission-area').innerHTML='<h2>आपने सभी मिशन पूरे कर लिए हैं!</h2>';
+  document.getElementById('feedback').innerHTML='';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('final-modal').style.display='flex';
+}
+
+function closeFinalModal() {
+  document.getElementById('final-modal').style.display='none';
+}
+
+// Generate certificate
+function generateCertificate() {
+  const name = document.getElementById('player-name').value.trim();
+  if (!name) { alert('कृपया अपना नाम दर्ज करें।'); return; }
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  // Create certificate background
+  canvas.width=800; canvas.height=600;
+  ctx.fillStyle='#fff';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.font='30px Nunito';
+  ctx.fillStyle='#333';
+  ctx.fillText('सामाजिक स्वास्थ्य पुरस्कार',200,80);
+  ctx.font='22px Nunito';
+  ctx.fillText(`यह प्रमाणित करता है कि`,250,130);
+  ctx.font='28px Nunito bold';
+  ctx.fillText(`${name}`,300,180);
+  ctx.font='20px Nunito';
+  ctx.fillText(`ने मलेरिया रोकने के लिए महत्वपूर्ण कार्य किया है।`,150,230);
+  ctx.fillText(`— इस खेल के माध्यम से आपने सही जानकारी प्राप्त की।`,150,260);
+  ctx.fillText(`उल्लेखनीय उपलब्धि`,350,330);
+  ctx.strokeStyle='#000';
+  ctx.strokeRect(250,350,300,100);
+  ctx.font='20px Nunito';
+  ctx.fillText('यह प्रमाणपत्र आपके प्रयासों का सम्मान है।',260,430);
+  // Save as image
+  html2canvas(canvas).then(c => {
+    const link = document.createElement('a');
+    link.href = c.toDataURL('image/png');
+    link.download = 'Certificate_of_Achievement.png';
+    link.click();
+  });
+}
+
+// START button initial
+window.onload=function() {
+  // All initializations are happening in loadMission()
+};
+</script>
