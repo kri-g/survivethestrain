@@ -434,17 +434,17 @@
             border: 3px solid white;
         }
 
-        /* Location positioning - distributed across the map */
-        .clinic { top: 80px; left: 50px; }
+        /* Location positioning - four corners */
+        .clinic { top: 50px; left: 50px; }
         .clinic .location-icon { color: var(--clinic-red); }
 
-        .school { top: 200px; left: 50px; }
+        .school { top: 50px; right: 50px; }
         .school .location-icon { color: var(--school-blue); }
 
-        .market { top: 80px; right: 50px; }
+        .market { bottom: 50px; left: 50px; }
         .market .location-icon { color: var(--market-green); }
 
-        .homes { bottom: 80px; right: 50px; }
+        .homes { bottom: 50px; right: 50px; }
         .homes .location-icon { color: var(--homes-orange); }
 
         /* Mission Panel */
@@ -3407,13 +3407,10 @@
                 updateStats();
                 updateUI(); // Ensure UI is properly initialized
                 
-                // Check if tutorial should be shown
-                const tutorialComplete = localStorage.getItem('malariaHeroesTutorialComplete');
-                if (!tutorialComplete) {
-                    setTimeout(() => {
-                        startTutorial();
-                    }, 1000);
-                }
+                // Always show tutorial for new games
+                setTimeout(() => {
+                    startTutorial();
+                }, 1000);
             }
         }
 
@@ -3699,16 +3696,8 @@
 
                 explanationHTML += '</ul>';
                 
-                // Add expandable sections
-                const expandableSection = createExpandableSection(
-                    lang === 'en' ? 'Learn More About Malaria Symptoms' : 'मलेरिया लक्षणों के बारे में अधिक जानें',
-                    expandableContent,
-                    '🔬'
-                );
-                
                 explanationHTML += '</div>';
             feedbackPanel.innerHTML = explanationHTML;
-                feedbackPanel.appendChild(expandableSection);
             feedbackPanel.classList.add('show');
             
             // Calculate performance
@@ -3745,15 +3734,7 @@
             explanationHTML += '<p>🏆 <strong>' + (lang === 'en' ? 'Performance:' : 'प्रदर्शन:') + '</strong> ' + translatePerformance(performance, lang) + '</p>';
             explanationHTML += '</div>';
             
-            // Add expandable sections
-            const expandableSectionClinic = createExpandableSection(
-                lang === 'en' ? 'Learn More About Malaria Symptoms' : 'मलेरिया लक्षणों के बारे में अधिक जानें',
-                expandableContent,
-                '🔬'
-            );
-            
             feedbackPanel.innerHTML = explanationHTML;
-            feedbackPanel.appendChild(expandableSectionClinic);
             
             // Update submit button
             const continueText = gameState.currentLanguage === 'en' ? '🚀 Continue to Next Mission' : '🚀 अगले मिशन पर जारी रखें';
@@ -4724,7 +4705,7 @@
             document.getElementById('final-points').textContent = gameState.knowledgePoints;
             document.getElementById('final-lives-hi').textContent = gameState.livesProtected;
             document.getElementById('final-points-hi').textContent = gameState.knowledgePoints;
-            document.getElementById('completion-modal').classList.add('show');
+            document.getElementById('completion-modal').classList.add('active');
         }
 
         // Restart game
@@ -4865,7 +4846,7 @@
             breedingHelpShown = false;
             
             // Reset UI
-            document.getElementById('completion-modal').classList.remove('show');
+            document.getElementById('completion-modal').classList.remove('active');
             
             // Reset locations
             document.querySelectorAll('.location').forEach(location => {
