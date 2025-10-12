@@ -322,7 +322,7 @@
                 0 10px 30px rgba(0, 0, 0, 0.2),
                 inset 0 2px 4px rgba(255, 255, 255, 0.8),
                 inset 0 -2px 4px rgba(0, 0, 0, 0.1);
-            position: relative;
+            position: absolute;
             overflow: hidden;
             backdrop-filter: blur(10px);
         }
@@ -444,17 +444,17 @@
             border: 3px solid white;
         }
 
-        /* Location positioning - spread across all corners */
-        .clinic { top: 10%; right: 10%; }
+        /* Location positioning - place in all four corners */
+        .clinic { top: 12%; left: 12%; }
         .clinic .location-icon { color: var(--clinic-red); }
 
-        .school { top: 10%; left: 10%; }
+        .school { top: 12%; right: 12%; }
         .school .location-icon { color: var(--school-blue); }
 
-        .market { bottom: 10%; right: 10%; }
+        .market { bottom: 12%; left: 12%; }
         .market .location-icon { color: var(--market-green); }
 
-        .homes { bottom: 10%; left: 10%; }
+        .homes { bottom: 12%; right: 12%; }
         .homes .location-icon { color: var(--homes-orange); }
 
         /* Mission Panel */
@@ -783,7 +783,7 @@
             padding: 1rem;
             margin: 2rem 0;
             position: relative;
-            height: 400px;
+            min-height: 450px;
             width: 100%;
             border: 3px solid var(--warning-amber);
             background-image: 
@@ -806,6 +806,8 @@
             color: var(--homes-orange);
             margin-bottom: 1rem;
             font-size: 1.3rem;
+            position: relative;
+            z-index: 2;
         }
 
         .breeding-progress {
@@ -818,6 +820,8 @@
             border: 2px solid var(--warning-amber);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
         }
 
         .breeding-progress:hover {
@@ -854,21 +858,21 @@
 
         .breeding-site {
             position: absolute;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 2.2rem;
             border-radius: 15px;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
             border: 2px solid var(--light-background);
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
             backdrop-filter: blur(15px);
-            position: relative;
             overflow: hidden;
+            z-index: 3;
         }
 
         .breeding-site::before {
@@ -918,6 +922,22 @@
             10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
             20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
+
+        /* Breeding site positions using percentages - all visible in the compound */
+        .site-1  { top: 15%; left: 10%; }
+        .site-2  { top: 15%; left: 30%; }
+        .site-3  { top: 15%; left: 50%; }
+        .site-4  { top: 15%; left: 70%; }
+
+        .site-5  { top: 45%; left: 15%; }
+        .site-6  { top: 45%; left: 35%; }
+        .site-7  { top: 45%; left: 55%; }
+        .site-8  { top: 45%; left: 75%; }
+
+        .site-9  { top: 75%; left: 10%; }
+        .site-10 { top: 75%; left: 30%; }
+        .site-11 { top: 75%; left: 50%; }
+        .site-12 { top: 75%; left: 70%; }
 
         /* Particle effects */
         .particle {
@@ -982,20 +1002,6 @@
                 opacity: 0;
             }
         }
-
-        /* Breeding site positions - properly contained within compound */
-        .site-1 { top: 30px; left: 30px; }
-        .site-2 { top: 30px; left: 90px; }
-        .site-3 { top: 30px; left: 150px; }
-        .site-4 { top: 30px; left: 210px; }
-        .site-5 { top: 90px; left: 30px; }
-        .site-6 { top: 90px; left: 90px; }
-        .site-7 { top: 90px; left: 150px; }
-        .site-8 { top: 90px; left: 210px; }
-        .site-9 { top: 150px; left: 30px; }
-        .site-10 { top: 150px; left: 90px; }
-        .site-11 { top: 150px; left: 150px; }
-        .site-12 { top: 150px; left: 210px; }
 
         /* Help Panel */
         .help-panel {
@@ -1132,7 +1138,7 @@
             transition: all 0.5s ease;
         }
 
-        .completion-modal.show {
+        .completion-modal.active {
             opacity: 1;
             visibility: visible;
         }
@@ -1149,7 +1155,7 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
-        .completion-modal.show .completion-content {
+        .completion-modal.active .completion-content {
             transform: scale(1);
         }
 
@@ -1707,484 +1713,6 @@
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
         }
 
-        /* Mini-Games System */
-        .minigame-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .minigame-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .minigame-panel {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 700px;
-            width: 90vw;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
-        }
-
-        .minigame-overlay.active .minigame-panel {
-            transform: scale(1);
-        }
-
-        .minigame-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .minigame-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--hero-blue);
-            margin-bottom: 0.5rem;
-            font-family: 'Fredoka', sans-serif;
-        }
-
-        .minigame-description {
-            color: #6b7280;
-            font-size: 1rem;
-        }
-
-        .minigame-content {
-            margin-bottom: 2rem;
-        }
-
-        /* Mosquito Life Cycle Game */
-        .lifecycle-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-
-        .lifecycle-stage {
-            background: #f8fafc;
-            border: 2px dashed #d1d5db;
-            border-radius: 12px;
-            padding: 1rem;
-            text-align: center;
-            min-height: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .lifecycle-stage.drag-over {
-            border-color: var(--hero-blue);
-            background: #eff6ff;
-        }
-
-        .lifecycle-stage.correct {
-            border-color: var(--victory-green);
-            background: #f0fdf4;
-        }
-
-        .lifecycle-stage.incorrect {
-            border-color: var(--clinic-red);
-            background: #fef2f2;
-        }
-
-        .lifecycle-item {
-            background: white;
-            border: 2px solid var(--hero-blue);
-            border-radius: 12px;
-            padding: 1rem;
-            margin: 0.5rem;
-            cursor: grab;
-            transition: all 0.3s ease;
-            user-select: none;
-        }
-
-        .lifecycle-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .lifecycle-item:active {
-            cursor: grabbing;
-        }
-
-        .lifecycle-item.dragging {
-            opacity: 0.5;
-            transform: rotate(5deg);
-        }
-
-        /* Bed Net Placement Game */
-        .bednet-house {
-            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 1rem 0;
-            position: relative;
-            min-height: 300px;
-        }
-
-        .bednet-room {
-            background: white;
-            border: 2px solid #d1d5db;
-            border-radius: 12px;
-            padding: 1rem;
-            margin: 0.5rem;
-            position: relative;
-            min-height: 80px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .bednet-room:hover {
-            border-color: var(--hero-blue);
-            background: #f8fafc;
-        }
-
-        .bednet-room.has-net {
-            border-color: var(--victory-green);
-            background: #f0fdf4;
-        }
-
-        .bednet-net {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(16, 185, 129, 0.2);
-            border: 2px solid var(--victory-green);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-        }
-
-        .bednet-inventory {
-            display: flex;
-            gap: 1rem;
-            margin: 1rem 0;
-            justify-content: center;
-        }
-
-        .bednet-item {
-            background: var(--victory-green);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.5rem;
-        }
-
-        .bednet-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        }
-
-        .bednet-item:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Timer */
-        .minigame-timer {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            border-radius: 12px;
-            padding: 1rem;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .timer-display {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--warning-amber);
-        }
-
-        .timer-bar {
-            width: 100%;
-            height: 8px;
-            background: #e5e7eb;
-            border-radius: 4px;
-            margin-top: 0.5rem;
-            overflow: hidden;
-        }
-
-        .timer-progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--victory-green), var(--warning-amber), var(--clinic-red));
-            transition: width 0.1s ease;
-        }
-
-        /* Score Display */
-        .minigame-score {
-            background: linear-gradient(135deg, #f0f9ff, #dbeafe);
-            border-radius: 12px;
-            padding: 1rem;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .score-display {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--hero-blue);
-        }
-
-        /* Mini-game buttons */
-        .minigame-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .minigame-btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .minigame-btn.primary {
-            background: var(--hero-blue);
-            color: white;
-        }
-
-        .minigame-btn.secondary {
-            background: #f3f4f6;
-            color: #374151;
-        }
-
-        .minigame-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Modal System */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 800px;
-            width: 90vw;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
-        }
-
-        .modal.active .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e5e7eb;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--hero-blue);
-            font-family: 'Fredoka', sans-serif;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 2rem;
-            color: #6b7280;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .close-btn:hover {
-            background: #f3f4f6;
-            color: var(--clinic-red);
-        }
-
-        /* Completion Modal */
-        .completion-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .completion-modal.active {
-            display: flex !important;
-            opacity: 1 !important;
-        }
-
-        .completion-content {
-            background: linear-gradient(135deg, #ffffff, #f8fafc);
-            border-radius: 24px;
-            padding: 3rem;
-            max-width: 600px;
-            width: 90vw;
-            text-align: center;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
-            transform: scale(0.7) rotateY(15deg);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 4px solid var(--victory-green);
-            position: relative;
-            z-index: 10000;
-        }
-
-        .completion-modal.active .completion-content {
-            transform: scale(1) rotateY(0deg);
-        }
-
-        .completion-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--victory-green);
-            margin-bottom: 1rem;
-            font-family: 'Fredoka', sans-serif;
-            text-shadow: 0 4px 8px rgba(34, 197, 94, 0.3);
-        }
-
-        .completion-text {
-            font-size: 1.2rem;
-            color: var(--neutral-slate);
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-
-        .completion-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .completion-btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 16px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .completion-btn.primary {
-            background: var(--hero-blue);
-            color: white;
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
-        }
-
-        .completion-btn.secondary {
-            background: var(--victory-green);
-            color: white;
-            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
-        }
-
-        .completion-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Certificate Modal */
-        .certificate-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
-            z-index: 3000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .certificate-modal.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .certificate-container {
-            background: linear-gradient(135deg, #ffffff, #f8fafc);
-            border-radius: 24px;
-            padding: 3rem;
-            max-width: 800px;
-            width: 90vw;
-            text-align: center;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
-            transform: scale(0.7);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 4px solid var(--victory-green);
-        }
-
-        .certificate-modal.active .certificate-container {
-            transform: scale(1);
-        }
         @media (max-width: 768px) {
             .village-container {
                 grid-template-columns: 1fr;
@@ -2197,18 +1725,18 @@
             }
 
             .location {
-                width: 80px;
-                height: 80px;
+                width: 100px;
+                height: 100px;
             }
 
             /* Mobile location positioning */
-            .clinic { top: 10%; left: 10%; }
-            .school { top: 10%; right: 10%; }
-            .market { bottom: 10%; left: 10%; }
-            .homes { bottom: 10%; right: 10%; }
+            .clinic { top: 10%; left: 8%; }
+            .school { top: 10%; right: 8%; }
+            .market { bottom: 10%; left: 8%; }
+            .homes { bottom: 10%; right: 8%; }
 
             .location-icon {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
 
             .breeding-site {
@@ -2218,7 +1746,7 @@
             }
 
             .compound-container {
-                height: 400px;
+                min-height: 380px;
             }
 
             .options-grid {
@@ -2471,36 +1999,6 @@
         </div>
     </div>
 
-    <!-- Mini-Games Modal -->
-    <div class="minigame-overlay" id="minigame-overlay">
-        <div class="minigame-panel">
-            <div class="minigame-header">
-                <h2 class="minigame-title" id="minigame-title">🦟 Mosquito Life Cycle Match</h2>
-                <p class="minigame-description" id="minigame-description">Drag the stages to complete the mosquito life cycle!</p>
-            </div>
-            
-            <div class="minigame-timer">
-                <div class="timer-display" id="timer-display">60</div>
-                <div class="timer-bar">
-                    <div class="timer-progress" id="timer-progress"></div>
-                </div>
-            </div>
-            
-            <div class="minigame-score">
-                <div class="score-display">Score: <span id="minigame-score">0</span> points</div>
-            </div>
-            
-            <div class="minigame-content" id="minigame-content">
-                <!-- Content will be populated by JavaScript -->
-            </div>
-            
-            <div class="minigame-buttons">
-                <button class="minigame-btn secondary" onclick="closeMinigame()">Close</button>
-                <button class="minigame-btn primary" onclick="startMinigame()" id="minigame-start">Start Game</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Glossary Modal -->
     <div class="glossary-overlay" id="glossary-overlay">
         <div class="glossary-panel">
@@ -2650,6 +2148,61 @@
         let foundBreedingSites = [];
         let breedingHelpShown = false;
         let breedingAttempts = 0;
+        let tutorialStep = 0;
+
+        // Simple anchored explanation popover (auto-dismiss)
+        function showExplanation(anchorEl, html, type = 'info') {
+            const pop = document.createElement('div');
+            pop.style.position = 'fixed';
+            const rect = anchorEl.getBoundingClientRect();
+            pop.style.left = (rect.left + rect.width / 2) + 'px';
+            pop.style.top = (rect.top - 12) + 'px';
+            pop.style.transform = 'translate(-50%, -100%)';
+            pop.style.zIndex = '5000';
+            pop.style.maxWidth = '280px';
+            pop.style.padding = '10px 12px';
+            pop.style.borderRadius = '10px';
+            pop.style.fontSize = '0.9rem';
+            pop.style.lineHeight = '1.3';
+            pop.style.color = '#111827';
+            pop.style.background = '#ffffff';
+            pop.style.border = '2px solid ' + (type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#93c5fd');
+            pop.style.boxShadow = '0 8px 24px rgba(0,0,0,0.18)';
+            pop.innerHTML = html;
+
+            document.body.appendChild(pop);
+            setTimeout(() => { pop.remove(); }, 2500);
+        }
+
+        // Breeding-site explanations (correct and wrong)
+        const breedingExplanations = {
+            'water-barrel':   { correct: 'Standing water in barrels can allow larvae to develop in 7–14 days.' },
+            'plant-saucers':  { correct: 'Plant saucers collect water after rain; classic larval habitat.' },
+            'roof-gutter':    { correct: 'Blocked gutters trap water. Anopheles can breed in these pools.' },
+            'old-bucket':     { correct: 'Unused buckets often hold rainwater—prime breeding habitat.' },
+            'flower-vase':    { correct: 'Water retained in vases supports larval growth.' },
+            'tire-planter':   { correct: 'Tires collect rainwater; WHO notes them as common breeding sites.' },
+
+            'tree-base':      { wrong: 'Dry tree bases without water do not support aquatic larvae.' },
+            'dry-garden':     { wrong: 'No standing water—mosquitoes cannot complete their aquatic stages.' },
+            'house-wall':     { wrong: 'Solid walls don\'t hold water; larvae require standing water.' },
+            'flowing-drain':  { wrong: 'Flowing water flushes larvae; stagnant pools are the risk.' },
+            'solid-pavement': { wrong: 'No water retention—no larval development possible.' },
+            'hanging-clothes':{ wrong: 'Clothes do not provide water; not a breeding habitat.' }
+        };
+
+        // Clinic symptom immediate explanations
+        const symptomFeedback = {
+            fever:   { type: 'success', msg: 'Fever ≥38°C is the primary clinical sign in malaria (WHO).' },
+            headache:{ type: 'success', msg: 'Headache is common with malaria fever paroxysms.' },
+            chills:  { type: 'success', msg: 'Chills/sweats are hallmark paroxysm features.' },
+            nausea:  { type: 'success', msg: 'Nausea/vomiting are frequent in pediatric malaria.' },
+            fatigue: { type: 'success', msg: 'Systemic fatigue/malaise are typical with malaria.' },
+
+            rash:    { type: 'error',   msg: 'Rash is uncommon in malaria—suggests another etiology.' },
+            cough:   { type: 'error',   msg: 'Persistent cough is not typical in uncomplicated malaria.' },
+            throat:  { type: 'error',   msg: 'Sore throat suggests an upper respiratory cause, not malaria.' }
+        };
 
         // Language switching
         function switchLanguage(lang) {
@@ -2980,368 +2533,6 @@
             }
         }
 
-        // Mini-Games System
-        let currentMinigame = null;
-        let minigameTimer = null;
-        let minigameScore = 0;
-        let minigameTimeLeft = 60;
-
-        const minigames = {
-            lifecycle: {
-                title: '🦟 Mosquito Life Cycle Match',
-                description: 'Drag the stages to complete the mosquito life cycle! Learn how to interrupt breeding.',
-                stages: [
-                    { id: 'egg', name: 'Egg Stage', icon: '🥚', description: 'Mosquito eggs laid in standing water' },
-                    { id: 'larva', name: 'Larva Stage', icon: '🐛', description: 'Baby mosquito swimming in water' },
-                    { id: 'pupa', name: 'Pupa Stage', icon: '🦟', description: 'Mosquito transforming (no butterfly emoji available)' },
-                    { id: 'adult', name: 'Adult Stage', icon: '🦟', description: 'Flying mosquito ready to bite' }
-                ],
-                correctOrder: ['egg', 'larva', 'pupa', 'adult'],
-                educationalContent: {
-                    en: {
-                        egg: 'Eggs are laid in standing water and hatch in 2-3 days. Remove standing water to prevent this stage.',
-                        larva: 'Larvae live in water for 7-10 days, feeding on microorganisms. They breathe through a tube.',
-                        pupa: 'Pupae don\'t eat but transform for 2-3 days. This is when mosquitoes are most vulnerable.',
-                        adult: 'Adult mosquitoes emerge and can fly. Females need blood meals to lay eggs.'
-                    },
-                    hi: {
-                        egg: 'अंडे स्थिर पानी में रखे जाते हैं और 2-3 दिनों में फूटते हैं। इस चरण को रोकने के लिए स्थिर पानी हटाएं।',
-                        larva: 'लार्वा 7-10 दिनों तक पानी में रहते हैं, सूक्ष्मजीवों पर भोजन करते हैं। वे एक नली के माध्यम से सांस लेते हैं।',
-                        pupa: 'प्यूपा भोजन नहीं करते लेकिन 2-3 दिनों तक रूपांतरित होते हैं। यह वह समय है जब मच्छर सबसे कमजोर होते हैं।',
-                        adult: 'वयस्क मच्छर निकलते हैं और उड़ सकते हैं। मादाओं को अंडे देने के लिए रक्त भोजन की आवश्यकता होती है।'
-                    }
-                }
-            },
-            bednet: {
-                title: '🛏️ Bed Net Placement Puzzle',
-                description: 'Place bed nets correctly to protect sleeping areas!',
-                rooms: [
-                    { id: 'bedroom1', name: 'Master Bedroom', hasNet: false, correct: true },
-                    { id: 'bedroom2', name: 'Children\'s Room', hasNet: false, correct: true },
-                    { id: 'livingroom', name: 'Living Room', hasNet: false, correct: false },
-                    { id: 'kitchen', name: 'Kitchen', hasNet: false, correct: false }
-                ]
-            }
-        };
-
-        function openMinigame(gameType) {
-            currentMinigame = gameType;
-            const game = minigames[gameType];
-            
-            document.getElementById('minigame-title').textContent = game.title;
-            document.getElementById('minigame-description').textContent = game.description;
-            document.getElementById('minigame-overlay').classList.add('active');
-            
-            setupMinigame(gameType);
-        }
-
-        function closeMinigame() {
-            document.getElementById('minigame-overlay').classList.remove('active');
-            if (minigameTimer) {
-                clearInterval(minigameTimer);
-                minigameTimer = null;
-            }
-            minigameScore = 0;
-            minigameTimeLeft = 60;
-        }
-
-        function setupMinigame(gameType) {
-            const content = document.getElementById('minigame-content');
-            content.innerHTML = '';
-            
-            if (gameType === 'lifecycle') {
-                setupLifecycleGame(content);
-            } else if (gameType === 'bednet') {
-                setupBednetGame(content);
-            }
-        }
-
-        function setupLifecycleGame(content) {
-            const game = minigames.lifecycle;
-            const lang = gameState.currentLanguage;
-            
-            // Add educational introduction
-            const intro = document.createElement('div');
-            intro.style.background = '#f0f9ff';
-            intro.style.padding = '1rem';
-            intro.style.borderRadius = '12px';
-            intro.style.marginBottom = '1rem';
-            intro.innerHTML = `
-                <h4 style="color: var(--hero-blue); margin-bottom: 0.5rem;">🔬 Public Health Education</h4>
-                <p style="margin-bottom: 0.5rem;">${lang === 'en' ? 
-                    'Understanding the mosquito life cycle helps us know when to interrupt breeding. Each stage has different vulnerabilities we can target.' :
-                    'मच्छर के जीवन चक्र को समझने से हमें पता चलता है कि प्रजनन को कब बाधित करना है। प्रत्येक चरण में अलग-अलग कमजोरियां हैं जिन्हें हम लक्षित कर सकते हैं।'}</p>
-                <p style="font-size: 0.9rem; color: #6b7280;">${lang === 'en' ? 
-                    'Drag each stage to its correct position in the life cycle.' :
-                    'जीवन चक्र में प्रत्येक चरण को उसकी सही स्थिति में खींचें।'}</p>
-            `;
-            content.appendChild(intro);
-            
-            // Create drop zones
-            const dropZones = document.createElement('div');
-            dropZones.className = 'lifecycle-container';
-            
-            game.stages.forEach((stage, index) => {
-                const zone = document.createElement('div');
-                zone.className = 'lifecycle-stage';
-                zone.id = `zone-${stage.id}`;
-                zone.innerHTML = `
-                    <div style="font-weight: 600; margin-bottom: 0.5rem;">${index + 1}. ${stage.name}</div>
-                    <div style="font-size: 0.9rem; color: #6b7280;">${lang === 'en' ? 'Drop here' : 'यहाँ छोड़ें'}</div>
-                `;
-                dropZones.appendChild(zone);
-            });
-            
-            // Create draggable items
-            const items = document.createElement('div');
-            items.style.display = 'flex';
-            items.style.flexWrap = 'wrap';
-            items.style.gap = '1rem';
-            items.style.justifyContent = 'center';
-            items.style.marginTop = '1rem';
-            
-            // Shuffle stages for challenge
-            const shuffledStages = [...game.stages].sort(() => Math.random() - 0.5);
-            
-            shuffledStages.forEach(stage => {
-                const item = document.createElement('div');
-                item.className = 'lifecycle-item';
-                item.draggable = true;
-                item.id = `item-${stage.id}`;
-                item.innerHTML = `
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">${stage.icon}</div>
-                    <div style="font-weight: 600;">${stage.name}</div>
-                `;
-                
-                item.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', stage.id);
-                    item.classList.add('dragging');
-                });
-                
-                item.addEventListener('dragend', () => {
-                    item.classList.remove('dragging');
-                });
-                
-                items.appendChild(item);
-            });
-            
-            content.appendChild(dropZones);
-            content.appendChild(items);
-            
-            // Add drop event listeners
-            document.querySelectorAll('.lifecycle-stage').forEach(zone => {
-                zone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    zone.classList.add('drag-over');
-                });
-                
-                zone.addEventListener('dragleave', () => {
-                    zone.classList.remove('drag-over');
-                });
-                
-                zone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    zone.classList.remove('drag-over');
-                    
-                    const stageId = e.dataTransfer.getData('text/plain');
-                    const item = document.getElementById(`item-${stageId}`);
-                    const stage = game.stages.find(s => s.id === stageId);
-                    
-                    // Check if correct
-                    const correctStage = game.stages.find(s => s.id === zone.id.replace('zone-', ''));
-                    const isCorrect = stageId === correctStage.id;
-                    
-                    if (isCorrect) {
-                        zone.classList.add('correct');
-                        zone.innerHTML = `
-                            <div style="font-weight: 600; margin-bottom: 0.5rem;">${correctStage.name}</div>
-                            <div style="font-size: 2rem;">${stage.icon}</div>
-                        `;
-                        item.style.display = 'none';
-                        minigameScore += 25;
-                        updateMinigameScore();
-                        playSound('correct');
-                        
-                        // Show educational content
-                        showEducationalContent(stageId, lang);
-                        
-                        // Check if game complete
-                        if (document.querySelectorAll('.lifecycle-stage.correct').length === 4) {
-                            completeMinigame();
-                        }
-                    } else {
-                        zone.classList.add('incorrect');
-                        setTimeout(() => {
-                            zone.classList.remove('incorrect');
-                        }, 1000);
-                        playSound('incorrect');
-                    }
-                });
-            });
-        }
-
-        function showEducationalContent(stageId, lang) {
-            const game = minigames.lifecycle;
-            const content = game.educationalContent[lang][stageId];
-            
-            // Create educational popup
-            const popup = document.createElement('div');
-            popup.style.position = 'fixed';
-            popup.style.top = '50%';
-            popup.style.left = '50%';
-            popup.style.transform = 'translate(-50%, -50%)';
-            popup.style.background = 'white';
-            popup.style.padding = '1.5rem';
-            popup.style.borderRadius = '12px';
-            popup.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.3)';
-            popup.style.zIndex = '3000';
-            popup.style.maxWidth = '400px';
-            popup.style.textAlign = 'center';
-            popup.innerHTML = `
-                <h4 style="color: var(--hero-blue); margin-bottom: 1rem;">${lang === 'en' ? 'Educational Fact' : 'शैक्षिक तथ्य'}</h4>
-                <p style="margin-bottom: 1rem;">${content}</p>
-                <button onclick="this.parentElement.remove()" style="background: var(--hero-blue); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;">
-                    ${lang === 'en' ? 'Continue' : 'जारी रखें'}
-                </button>
-            `;
-            document.body.appendChild(popup);
-            
-            // Auto-remove after 3 seconds
-            setTimeout(() => {
-                if (popup.parentElement) {
-                    popup.remove();
-                }
-            }, 3000);
-        }
-
-        function setupBednetGame(content) {
-            const game = minigames.bednet;
-            
-            // Create house layout
-            const house = document.createElement('div');
-            house.className = 'bednet-house';
-            house.innerHTML = '<h3 style="text-align: center; margin-bottom: 1rem;">🏠 House Layout</h3>';
-            
-            const roomsContainer = document.createElement('div');
-            roomsContainer.style.display = 'grid';
-            roomsContainer.style.gridTemplateColumns = 'repeat(2, 1fr)';
-            roomsContainer.style.gap = '1rem';
-            
-            game.rooms.forEach(room => {
-                const roomDiv = document.createElement('div');
-                roomDiv.className = 'bednet-room';
-                roomDiv.id = `room-${room.id}`;
-                roomDiv.innerHTML = `
-                    <div style="font-weight: 600;">${room.name}</div>
-                    <div style="font-size: 0.9rem; color: #6b7280;">Click to place net</div>
-                `;
-                
-                roomDiv.addEventListener('click', () => {
-                    if (!room.hasNet) {
-                        room.hasNet = true;
-                        roomDiv.classList.add('has-net');
-                        roomDiv.innerHTML = `
-                            <div class="bednet-net">
-                                <span>🛏️</span>
-                            </div>
-                        `;
-                        
-                        if (room.correct) {
-                            minigameScore += 30;
-                            playSound('correct');
-                        } else {
-                            minigameScore -= 10;
-                            playSound('incorrect');
-                        }
-                        updateMinigameScore();
-                    }
-                });
-                
-                roomsContainer.appendChild(roomDiv);
-            });
-            
-            house.appendChild(roomsContainer);
-            content.appendChild(house);
-            
-            // Add instructions
-            const instructions = document.createElement('div');
-            instructions.style.background = '#f0f9ff';
-            instructions.style.padding = '1rem';
-            instructions.style.borderRadius = '12px';
-            instructions.style.marginTop = '1rem';
-            instructions.innerHTML = `
-                <h4 style="color: var(--hero-blue); margin-bottom: 0.5rem;">💡 Instructions</h4>
-                <p>Click on bedrooms to place bed nets. Don't place nets in living areas!</p>
-            `;
-            content.appendChild(instructions);
-        }
-
-        function startMinigame() {
-            minigameTimeLeft = 60;
-            minigameScore = 0;
-            updateMinigameScore();
-            updateTimer();
-            
-            minigameTimer = setInterval(() => {
-                minigameTimeLeft--;
-                updateTimer();
-                
-                if (minigameTimeLeft <= 0) {
-                    completeMinigame();
-                }
-            }, 1000);
-            
-            document.getElementById('minigame-start').style.display = 'none';
-        }
-
-        function updateTimer() {
-            document.getElementById('timer-display').textContent = minigameTimeLeft;
-            const progress = (minigameTimeLeft / 60) * 100;
-            document.getElementById('timer-progress').style.width = progress + '%';
-        }
-
-        function updateMinigameScore() {
-            document.getElementById('minigame-score').textContent = minigameScore;
-        }
-
-        function completeMinigame() {
-            if (minigameTimer) {
-                clearInterval(minigameTimer);
-                minigameTimer = null;
-            }
-            
-            // Award bonus points
-            const bonusPoints = Math.floor(minigameScore / 10);
-            gameState.knowledgePoints += bonusPoints;
-            updateStats();
-            
-            // Show completion message
-            const content = document.getElementById('minigame-content');
-            content.innerHTML = `
-                <div style="text-align: center; padding: 2rem;">
-                    <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
-                    <h3 style="color: var(--victory-green); margin-bottom: 1rem;">Mini-Game Complete!</h3>
-                    <p style="font-size: 1.2rem; margin-bottom: 1rem;">You earned <strong>${minigameScore}</strong> points!</p>
-                    <p style="color: #6b7280;">Bonus: +${bonusPoints} knowledge points added to your total!</p>
-                </div>
-            `;
-            
-            playSound('complete');
-            createCelebration();
-        }
-
-        // Add mini-game buttons to mission panels
-        function addMinigameButtons() {
-            const missionPanels = document.querySelectorAll('.mission-panel');
-            missionPanels.forEach(panel => {
-                const button = document.createElement('button');
-                button.className = 'action-btn';
-                button.style.marginTop = '1rem';
-                button.innerHTML = '🎮 Bonus Challenge';
-                button.onclick = () => openMinigame('lifecycle');
-                panel.appendChild(button);
-            });
-        }
         const tutorialSteps = [
             {
                 mascot: '🦟',
@@ -3576,7 +2767,6 @@
                         
                         <div class="feedback-panel" id="clinic-feedback"></div>
                         <button class="action-btn" id="clinic-submit" onclick="evaluateClinicDiagnosis()" disabled>🩺 Submit Diagnosis</button>
-                        <button class="action-btn" id="clinic-bonus" onclick="openMinigame('lifecycle')" style="margin-top: 1rem; background: var(--victory-green); display: none;">🔬 Educational Challenge: Mosquito Life Cycle</button>
                     </div>
                 `,
                 hi: `
@@ -3631,7 +2821,6 @@
                         
                         <div class="feedback-panel" id="clinic-feedback"></div>
                         <button class="action-btn" id="clinic-submit" onclick="evaluateClinicDiagnosis()" disabled>🩺 निदान प्रस्तुत करें</button>
-                        <button class="action-btn" id="clinic-bonus" onclick="openMinigame('lifecycle')" style="margin-top: 1rem; background: var(--victory-green); display: none;">🔬 शैक्षिक चुनौती: मच्छर जीवन चक्र</button>
                     </div>
                 `
             };
@@ -3639,11 +2828,12 @@
             document.getElementById('modal-content').innerHTML = content[gameState.currentLanguage];
         }
 
-        // Toggle symptom selection
+        // Toggle symptom selection with immediate explanation
         function toggleSymptom(symptomId) {
             const symptomCard = document.querySelector(`[data-symptom="${symptomId}"]`);
-            
-            if (selectedSymptoms.includes(symptomId)) {
+
+            const wasSelected = selectedSymptoms.includes(symptomId);
+            if (wasSelected) {
                 selectedSymptoms = selectedSymptoms.filter(s => s !== symptomId);
                 symptomCard.classList.remove('selected');
                 playSound('incorrect');
@@ -3652,7 +2842,14 @@
                 symptomCard.classList.add('selected');
                 playSound('correct');
             }
-            
+
+            // Immediate explanation next to the card (correct vs wrong)
+            const fb = symptomFeedback[symptomId];
+            if (fb) {
+                const html = (fb.type === 'success' ? '✅ ' : '❌ ') + fb.msg;
+                showExplanation(symptomCard, html, fb.type === 'success' ? 'success' : 'error');
+            }
+
             document.getElementById('clinic-submit').disabled = selectedSymptoms.length === 0;
         }
 
@@ -3676,71 +2873,45 @@
                 }
             });
             
-                // Add detailed explanation for each symptom with WHO information
+            // Add detailed explanation for each symptom with WHO information
             const feedbackPanel = document.getElementById('clinic-feedback');
             feedbackPanel.innerHTML = ''; // Clear any existing content first
             
-                const lang = gameState.currentLanguage;
-                let explanationHTML = '<div style="margin-top: 1rem;"><h4>' +
-                    (lang === 'en' ? 'WHO Clinical Guidelines Analysis:' : 'WHO नैदानिक दिशानिर्देश विश्लेषण:') + '</h4><ul>';
+            const lang = gameState.currentLanguage;
+            let explanationHTML = '<div style="margin-top: 1rem;"><h4>' +
+                (lang === 'en' ? 'WHO Clinical Guidelines Analysis:' : 'WHO नैदानिक दिशानिर्देश विश्लेषण:') + '</h4><ul>';
 
-                // Define detailed explanations for each symptom
-                const symptomExplanations = {
-                    en: {
-                        fever: '✅ <strong>High Fever (39.5°C)</strong> - WHO lists fever as the primary symptom of malaria. Temperature above 38°C with no other obvious cause is considered malaria until proven otherwise in endemic areas.',
-                        headache: '✅ <strong>Severe Headache</strong> - WHO identifies headache as one of the classic triad of malaria symptoms (fever, headache, chills). Present in 80-90% of malaria cases.',
-                        chills: '✅ <strong>Chills and Sweats</strong> - WHO recognizes chills and sweating as hallmark symptoms of malaria, especially during the febrile paroxysms that occur every 48-72 hours.',
-                        nausea: '✅ <strong>Nausea and Vomiting</strong> - WHO guidelines include gastrointestinal symptoms like nausea and vomiting as common in malaria, especially in children.',
-                        fatigue: '✅ <strong>Extreme Fatigue</strong> - WHO identifies fatigue and malaise as typical symptoms of malaria due to the body\'s inflammatory response to the parasite.',
-                        rash: '❌ <strong>Skin Rash</strong> - WHO guidelines state that rash is NOT a typical malaria symptom. This suggests other conditions like viral infections or allergic reactions.',
-                        cough: '❌ <strong>Persistent Cough</strong> - WHO notes that respiratory symptoms like cough are uncommon in uncomplicated malaria and may indicate other diseases or complications.',
-                        throat: '❌ <strong>Sore Throat</strong> - WHO guidelines indicate that sore throat is NOT associated with malaria and suggests upper respiratory infections instead.'
-                    },
-                    hi: {
-                        fever: '✅ <strong>तेज बुखार (39.5°C)</strong> - WHO मलेरिया के प्राथमिक लक्षण के रूप में बुखार को सूचीबद्ध करता है। स्थानिक क्षेत्रों में 38°C से अधिक तापमान को अन्य स्पष्ट कारण के बिना मलेरिया माना जाता है।',
-                        headache: '✅ <strong>तीव्र सिरदर्द</strong> - WHO सिरदर्द को मलेरिया के क्लासिक त्रय (बुखार, सिरदर्द, कंपकंपी) में से एक के रूप में पहचानता है। 80-90% मलेरिया मामलों में मौजूद।',
-                        chills: '✅ <strong>कंपकंपी और पसीना</strong> - WHO कंपकंपी और पसीने को मलेरिया के प्रमुख लक्षणों के रूप में पहचानता है, विशेष रूप से हर 48-72 घंटे में होने वाले ज्वर के दौरान।',
-                        nausea: '✅ <strong>मतली और उल्टी</strong> - WHO दिशानिर्देश मलेरिया में मतली और उल्टी जैसे गैस्ट्रोइंटेस्टाइनल लक्षणों को शामिल करते हैं, विशेष रूप से बच्चों में।',
-                        fatigue: '✅ <strong>अत्यधिक थकान</strong> - WHO परजीवी के प्रति शरीर की सूजन प्रतिक्रिया के कारण थकान और बेचैनी को मलेरिया के विशिष्ट लक्षणों के रूप में पहचानता है।',
-                        rash: '❌ <strong>त्वचा पर दाने</strong> - WHO दिशानिर्देश बताते हैं कि दाने मलेरिया का विशिष्ट लक्षण नहीं है। यह वायरल संक्रमण या एलर्जी प्रतिक्रियाओं जैसी अन्य स्थितियों का सुझाव देता है।',
-                        cough: '❌ <strong>लगातार खांसी</strong> - WHO नोट करता है कि खांसी जैसे श्वसन लक्षण असामान्य मलेरिया में असामान्य हैं और अन्य बीमारियों या जटिलताओं का संकेत दे सकते हैं।',
-                        throat: '❌ <strong>गले में खराश</strong> - WHO दिशानिर्देश बताते हैं कि गले में खराश मलेरिया से जुड़ी नहीं है और इसके बजाय ऊपरी श्वसन संक्रमण का सुझाव देती है।'
-                    }
-                };
-            
+            // Define detailed explanations for each symptom
+            const symptomExplanations = {
+                en: {
+                    fever: '✅ <strong>High Fever (39.5°C)</strong> - WHO lists fever as the primary symptom of malaria. Temperature above 38°C with no other obvious cause is considered malaria until proven otherwise in endemic areas.',
+                    headache: '✅ <strong>Severe Headache</strong> - WHO identifies headache as one of the classic triad of malaria symptoms (fever, headache, chills). Present in 80-90% of malaria cases.',
+                    chills: '✅ <strong>Chills and Sweats</strong> - WHO recognizes chills and sweating as hallmark symptoms of malaria, especially during the febrile paroxysms that occur every 48-72 hours.',
+                    nausea: '✅ <strong>Nausea and Vomiting</strong> - WHO guidelines include gastrointestinal symptoms like nausea and vomiting as common in malaria, especially in children.',
+                    fatigue: '✅ <strong>Extreme Fatigue</strong> - WHO identifies fatigue and malaise as typical symptoms of malaria due to the body\'s inflammatory response to the parasite.',
+                    rash: '❌ <strong>Skin Rash</strong> - WHO guidelines state that rash is NOT a typical malaria symptom. This suggests other conditions like viral infections or allergic reactions.',
+                    cough: '❌ <strong>Persistent Cough</strong> - WHO notes that respiratory symptoms like cough are uncommon in uncomplicated malaria and may indicate other diseases or complications.',
+                    throat: '❌ <strong>Sore Throat</strong> - WHO guidelines indicate that sore throat is NOT associated with malaria and suggests upper respiratory infections instead.'
+                },
+                hi: {
+                    fever: '✅ <strong>तेज बुखार (39.5°C)</strong> - WHO मलेरिया के प्राथमिक लक्षण के रूप में बुखार को सूचीबद्ध करता है। स्थानिक क्षेत्रों में 38°C से अधिक तापमान को अन्य स्पष्ट कारण के बिना मलेरिया माना जाता है।',
+                    headache: '✅ <strong>तीव्र सिरदर्द</strong> - WHO सिरदर्द को मलेरिया के क्लासिक त्रय (बुखार, सिरदर्द, कंपकंपी) में से एक के रूप में पहचानता है। 80-90% मलेरिया मामलों में मौजूद।',
+                    chills: '✅ <strong>कंपकंपी और पसीना</strong> - WHO कंपकंपी और पसीने को मलेरिया के प्रमुख लक्षणों के रूप में पहचानता है, विशेष रूप से हर 48-72 घंटे में होने वाले ज्वर के दौरान।',
+                    nausea: '✅ <strong>मतली और उल्टी</strong> - WHO दिशानिर्देश मलेरिया में मतली और उल्टी जैसे गैस्ट्रोइंटेस्टाइनल लक्षणों को शामिल करते हैं, विशेष रूप से बच्चों में।',
+                    fatigue: '✅ <strong>अत्यधिक थकान</strong> - WHO परजीवी के प्रति शरीर की सूजन प्रतिक्रिया के कारण थकान और बेचैनी को मलेरिया के विशिष्ट लक्षणों के रूप में पहचानता है।',
+                    rash: '❌ <strong>त्वचा पर दाने</strong> - WHO दिशानिर्देश बताते हैं कि दाने मलेरिया का विशिष्ट लक्षण नहीं है। यह वायरल संक्रमण या एलर्जी प्रतिक्रियाओं जैसी अन्य स्थितियों का सुझाव देता है।',
+                    cough: '❌ <strong>लगातार खांसी</strong> - WHO नोट करता है कि खांसी जैसे श्वसन लक्षण असामान्य मलेरिया में असामान्य हैं और अन्य बीमारियों या जटिलताओं का संकेत दे सकते हैं।',
+                    throat: '❌ <strong>गले में खराश</strong> - WHO दिशानिर्देश बताते हैं कि गले में खराश मलेरिया से जुड़ी नहीं है और इसके बजाय ऊपरी श्वसन संक्रमण का सुझाव देती है।'
+                }
+            };
+        
             selectedSymptoms.forEach(symptom => {
                 const isCorrect = correctSymptoms.includes(symptom);
                 const color = isCorrect ? 'green' : 'red';
-                    explanationHTML += `<li style="color: ${color}; margin-bottom: 0.5rem;">${symptomExplanations[lang][symptom]}</li>`;
-                });
+                explanationHTML += `<li style="color: ${color}; margin-bottom: 0.5rem;">${symptomExplanations[lang][symptom]}</li>`;
+            });
 
-                // Add expandable sections for enhanced learning
-                const expandableContent = `
-                    <div class="fact-box">
-                        <h4>🔬 Why This Works</h4>
-                        <p>${lang === 'en' ? 
-                            'WHO research shows that fever is the most reliable indicator of malaria infection. The parasite causes your body temperature to rise as it fights the infection. This is why checking temperature is the first step in malaria diagnosis.' :
-                            'WHO अनुसंधान दिखाता है कि बुखार मलेरिया संक्रमण का सबसे विश्वसनीय संकेतक है। परजीवी आपके शरीर के तापमान को संक्रमण से लड़ते समय बढ़ाता है। यही कारण है कि तापमान जांचना मलेरिया निदान में पहला कदम है।'}</p>
-                    </div>
-                    <div class="stat-highlight">
-                        <h4>📊 Real-World Impact</h4>
-                        <p>${lang === 'en' ? 
-                            'In Ghana, health workers trained to recognize malaria symptoms correctly identified 95% of cases, compared to only 60% before training. This shows how important symptom knowledge is!' :
-                            'घाना में, मलेरिया लक्षणों को पहचानने के लिए प्रशिक्षित स्वास्थ्य कर्मियों ने प्रशिक्षण से पहले केवल 60% की तुलना में 95% मामलों को सही ढंग से पहचाना। यह दिखाता है कि लक्षण ज्ञान कितना महत्वपूर्ण है!'}</p>
-                    </div>
-                    <div class="real-world-example">
-                        <h4>🌍 Did You Know?</h4>
-                        <p>${lang === 'en' ? 
-                            'Malaria symptoms appear 10-15 days after infection, but can take up to a year in some cases. This is why travelers returning from malaria areas should watch for symptoms for months!' :
-                            'मलेरिया लक्षण संक्रमण के 10-15 दिन बाद दिखाई देते हैं, लेकिन कुछ मामलों में एक साल तक लग सकते हैं। यही कारण है कि मलेरिया क्षेत्रों से लौटने वाले यात्रियों को महीनों तक लक्षणों पर नजर रखनी चाहिए!'}</p>
-                    </div>
-                `;
-
-                explanationHTML += '</ul>';
-                
-                explanationHTML += '</div>';
-            feedbackPanel.innerHTML = explanationHTML;
-            feedbackPanel.classList.add('show');
+            explanationHTML += '</ul>';
             
             // Calculate performance
             const accuracy = correctCount / correctSymptoms.length;
@@ -3776,18 +2947,13 @@
             explanationHTML += '<p>🏆 <strong>' + (lang === 'en' ? 'Performance:' : 'प्रदर्शन:') + '</strong> ' + translatePerformance(performance, lang) + '</p>';
             explanationHTML += '</div>';
             
-            feedbackPanel.innerHTML = explanationHTML;
+            feedbackPanel.innerHTML = explanationHTML + '</div>';
+            feedbackPanel.classList.add('show');
             
             // Update submit button
             const continueText = gameState.currentLanguage === 'en' ? '🚀 Continue to Next Mission' : '🚀 अगले मिशन पर जारी रखें';
             document.getElementById('clinic-submit').textContent = continueText;
             document.getElementById('clinic-submit').onclick = () => completeMission('clinic');
-            
-            // Show educational challenge button after completion
-            const bonusButton = document.getElementById('clinic-bonus');
-            if (bonusButton) {
-                bonusButton.style.display = 'block';
-            }
         }
 
         // SCHOOL MISSION
@@ -4028,25 +3194,6 @@
             schoolExplanationHTML += '<p>🔴 <strong>' + (lang === 'en' ? 'Low-risk students protected (age ≥12):' : 'कम जोखिम वाले छात्रों की सुरक्षा (आयु ≥12):') + '</strong> ' + lowRiskProtected + '/6</p>';
             schoolExplanationHTML += '</div>';
             
-            // Add WHO evidence and recommendations
-            schoolExplanationHTML += '<div style="margin: 1rem 0; padding: 1rem; background: #f0fdf4; border-radius: 8px; border-left: 4px solid var(--victory-green);">';
-            schoolExplanationHTML += '<h5>' + (lang === 'en' ? 'WHO Malaria Risk Data:' : 'WHO मलेरिया जोखिम डेटा:') + '</h5>';
-            schoolExplanationHTML += '<ul>';
-            schoolExplanationHTML += '<li>' + (lang === 'en' ? 
-                'Children under 5 years: 75% higher mortality risk, 60% of all malaria deaths' :
-                '5 वर्ष से कम उम्र के बच्चे: 75% अधिक मृत्यु जोखिम, सभी मलेरिया मौतों का 60%') + '</li>';
-            schoolExplanationHTML += '<li>' + (lang === 'en' ? 
-                'Children 5-9 years: 50% higher mortality risk, 25% of malaria deaths' :
-                '5-9 वर्ष के बच्चे: 50% अधिक मृत्यु जोखिम, मलेरिया मौतों का 25%') + '</li>';
-            schoolExplanationHTML += '<li>' + (lang === 'en' ? 
-                'Children 10+ years: Lower risk, better immune response, 15% of malaria deaths' :
-                '10+ वर्ष के बच्चे: कम जोखिम, बेहतर प्रतिरक्षा प्रतिक्रिया, मलेरिया मौतों का 15%') + '</li>';
-            schoolExplanationHTML += '</ul>';
-            schoolExplanationHTML += '<p><strong>' + (lang === 'en' ? 
-                'WHO Recommendation: Prioritize bed net distribution to children under 10 years, especially those under 5, as they have the highest malaria mortality risk.' :
-                'WHO सिफारिश: 10 वर्ष से कम उम्र के बच्चों, विशेष रूप से 5 वर्ष से कम उम्र के बच्चों को मच्छरदानी वितरण में प्राथमिकता दें, क्योंकि उनमें मलेरिया मृत्यु का सबसे अधिक जोखिम है।') + '</strong></p>';
-            schoolExplanationHTML += '</div>';
-            
             // Calculate performance and scoring
             let performance, points, lives;
             
@@ -4224,80 +3371,6 @@
                 }
             });
             
-            // Add detailed explanation with WHO evidence
-            const marketFeedback = document.getElementById('market-feedback');
-            marketFeedback.innerHTML = ''; // Clear any existing content first
-            
-            const lang = gameState.currentLanguage;
-            let marketExplanationHTML = '<div style="margin-top: 1rem;"><h4>' + 
-                (lang === 'en' ? 'WHO Evidence-Based Health Communication Analysis:' : 'WHO साक्ष्य-आधारित स्वास्थ्य संचार विश्लेषण:') + '</h4><ul>';
-            
-            // Define detailed explanations for each method
-            const methodExplanations = {
-                en: {
-                    demonstrations: '✅ <strong>Live Demonstrations</strong> - WHO recommends hands-on demonstrations as they increase knowledge retention by 80% and behavior change by 60%. Studies show people learn better through active participation.',
-                    'visual-aids': '✅ <strong>Visual Aids and Posters</strong> - WHO guidelines emphasize visual materials for low-literacy populations. Visual aids improve understanding by 70% and are essential for reaching diverse communities.',
-                    'community-sessions': '✅ <strong>Community Health Education Sessions</strong> - WHO promotes community-based approaches as they build local ownership and trust. Community sessions increase program sustainability by 85%.',
-                    'peer-education': '✅ <strong>Peer Education Programs</strong> - WHO recognizes peer educators as highly effective, with 90% message credibility. Peer education increases behavior change adoption by 75% compared to external educators.',
-                    'fear-tactics': '❌ <strong>Fear-Based Messaging</strong> - WHO warns against fear tactics as they often backfire, reducing compliance by 40%. Fear-based approaches can cause anxiety and avoidance behaviors.',
-                    'blame-approach': '❌ <strong>Blaming Individuals</strong> - WHO guidelines emphasize avoiding blame as it creates stigma and reduces help-seeking by 60%. Blame approaches damage community trust and program effectiveness.',
-                    'expensive-solutions': '❌ <strong>Expensive Prevention Methods</strong> - WHO advocates for affordable solutions to ensure equity. Expensive methods exclude 70% of vulnerable populations who need protection most.',
-                    'ignore-culture': '❌ <strong>Ignoring Cultural Context</strong> - WHO stresses cultural sensitivity as ignoring local beliefs reduces message acceptance by 50% and program effectiveness by 65%.'
-                },
-                hi: {
-                    demonstrations: '✅ <strong>प्रत्यक्ष प्रदर्शन</strong> - WHO सक्रिय प्रदर्शन की सिफारिश करता है क्योंकि यह ज्ञान प्रतिधारण को 80% और व्यवहार परिवर्तन को 60% बढ़ाता है। अध्ययन दिखाते हैं कि लोग सक्रिय भागीदारी के माध्यम से बेहतर सीखते हैं।',
-                    'visual-aids': '✅ <strong>दृश्य सहायक सामग्री और पोस्टर</strong> - WHO दिशानिर्देश कम साक्षरता वाली आबादी के लिए दृश्य सामग्री पर जोर देते हैं। दृश्य सहायक सामग्री समझ को 70% बेहतर बनाती है।',
-                    'community-sessions': '✅ <strong>सामुदायिक स्वास्थ्य शिक्षा सत्र</strong> - WHO सामुदायिक दृष्टिकोण को बढ़ावा देता है क्योंकि यह स्थानीय स्वामित्व और विश्वास बनाता है। सामुदायिक सत्र कार्यक्रम स्थिरता को 85% बढ़ाते हैं।',
-                    'peer-education': '✅ <strong>साथी शिक्षा कार्यक्रम</strong> - WHO साथी शिक्षकों को अत्यधिक प्रभावी मानता है, जिनकी संदेश विश्वसनीयता 90% है। साथी शिक्षा बाहरी शिक्षकों की तुलना में व्यवहार परिवर्तन अपनाने को 75% बढ़ाती है।',
-                    'fear-tactics': '❌ <strong>डर आधारित संदेश</strong> - WHO डर की रणनीतियों के खिलाफ चेतावनी देता है क्योंकि वे अक्सर उल्टे परिणाम देते हैं, अनुपालन को 40% कम करते हैं। डर आधारित दृष्टिकोण चिंता और परिहार व्यवहार पैदा कर सकते हैं।',
-                    'blame-approach': '❌ <strong>व्यक्तियों को दोष देना</strong> - WHO दिशानिर्देश दोष से बचने पर जोर देते हैं क्योंकि यह कलंक पैदा करता है और सहायता मांगने को 60% कम करता है। दोष दृष्टिकोण सामुदायिक विश्वास और कार्यक्रम प्रभावशीलता को नुकसान पहुंचाता है।',
-                    'expensive-solutions': '❌ <strong>महंगी रोकथाम विधियां</strong> - WHO न्यायसंगतता सुनिश्चित करने के लिए सस्ते समाधानों की वकालत करता है। महंगी विधियां 70% कमजोर आबादी को बाहर करती हैं जिन्हें सबसे ज्यादा सुरक्षा चाहिए।',
-                    'ignore-culture': '❌ <strong>सांस्कृतिक संदर्भ की अनदेखी</strong> - WHO सांस्कृतिक संवेदनशीलता पर जोर देता है क्योंकि स्थानीय मान्यताओं की अनदेखी संदेश स्वीकार्यता को 50% और कार्यक्रम प्रभावशीलता को 65% कम करती है।'
-                }
-            };
-            
-            selectedEducationMethods.forEach(method => {
-                const isCorrect = correctMethods.includes(method);
-                const color = isCorrect ? 'green' : 'red';
-                marketExplanationHTML += `<li style="color: ${color}; margin-bottom: 0.5rem;">${methodExplanations[lang][method]}</li>`;
-            });
-            
-            // Add expandable sections for enhanced learning
-            const expandableContent = `
-                <div class="fact-box">
-                    <h4>🔬 Why This Works</h4>
-                    <p>${lang === 'en' ? 
-                        'WHO research shows that peer education is 90% more effective than external messaging because community members trust their neighbors more than outsiders. This builds local ownership and sustainable behavior change.' :
-                        'WHO अनुसंधान दिखाता है कि साथी शिक्षा बाहरी संदेशों की तुलना में 90% अधिक प्रभावी है क्योंकि समुदाय के सदस्य बाहरी लोगों की तुलना में अपने पड़ोसियों पर अधिक भरोसा करते हैं। यह स्थानीय स्वामित्व और स्थायी व्यवहार परिवर्तन बनाता है।'}</p>
-                </div>
-                <div class="stat-highlight">
-                    <h4>📊 Real-World Impact</h4>
-                    <p>${lang === 'en' ? 
-                        'In Tanzania, community health education programs reduced malaria cases by 45% in just 2 years. The key was using local leaders and peer educators who spoke the community\'s language and understood their culture.' :
-                        'तंजानिया में, सामुदायिक स्वास्थ्य शिक्षा कार्यक्रमों ने केवल 2 वर्षों में मलेरिया के मामलों को 45% कम कर दिया। मुख्य बात स्थानीय नेताओं और साथी शिक्षकों का उपयोग करना था जो समुदाय की भाषा बोलते थे और उनकी संस्कृति को समझते थे।'}</p>
-                </div>
-                <div class="real-world-example">
-                    <h4>🌍 Did You Know?</h4>
-                    <p>${lang === 'en' ? 
-                        'Fear-based messaging actually increases risky behavior! WHO studies show that people exposed to scary malaria ads are 40% less likely to seek treatment because they feel hopeless. Positive, empowering messages work much better!' :
-                        'डर आधारित संदेश वास्तव में जोखिम भरे व्यवहार को बढ़ाते हैं! WHO अध्ययन दिखाते हैं कि डरावने मलेरिया विज्ञापनों के संपर्क में आने वाले लोग निराश महसूस करने के कारण उपचार की तलाश करने की 40% कम संभावना रखते हैं। सकारात्मक, सशक्तिकरण संदेश बहुत बेहतर काम करते हैं!'}</p>
-                </div>
-            `;
-
-            marketExplanationHTML += '</ul>';
-            
-            // Add expandable sections
-            const expandableSection = createExpandableSection(
-                lang === 'en' ? 'Learn More About Health Communication' : 'स्वास्थ्य संचार के बारे में अधिक जानें',
-                expandableContent,
-                '🗣️'
-            );
-            
-            marketExplanationHTML += '</div>';
-            marketFeedback.innerHTML = marketExplanationHTML;
-            marketFeedback.appendChild(expandableSection);
-            marketFeedback.classList.add('show');
-            
             // Calculate performance and scoring
             let performance, points, lives;
             
@@ -4319,6 +3392,16 @@
                 lives = 3;
             }
             
+            gameState.knowledgePoints += points;
+            gameState.livesProtected += lives;
+            updateStats();
+            
+            // Add detailed explanation with WHO evidence
+            const marketFeedback = document.getElementById('market-feedback');
+            const lang = gameState.currentLanguage;
+            let marketExplanationHTML = '<div style="margin-top: 1rem;"><h4>' + 
+                (lang === 'en' ? 'WHO Evidence-Based Health Communication Analysis:' : 'WHO साक्ष्य-आधारित स्वास्थ्य संचार विश्लेषण:') + '</h4>';
+            
             // Add final scoring display
             marketExplanationHTML += '<div style="margin-top: 1rem; padding: 1rem; background: #f0fdf4; border-radius: 8px; border-left: 4px solid var(--victory-green);">';
             marketExplanationHTML += '<h5>' + (lang === 'en' ? 'Mission Results:' : 'मिशन परिणाम:') + '</h5>';
@@ -4329,10 +3412,6 @@
             
             marketFeedback.innerHTML = marketExplanationHTML;
             marketFeedback.classList.add('show');
-            
-            gameState.knowledgePoints += points;
-            gameState.livesProtected += lives;
-            updateStats();
             
             // Update submit button
             const continueText = gameState.currentLanguage === 'en' ? '🚀 Continue to Next Mission' : '🚀 अगले मिशन पर जारी रखें';
@@ -4381,20 +3460,20 @@
                             <div class="compound-title">🏠 Mensah Family Compound</div>
                             
                             <!-- Correct breeding sites -->
-                            <div class="breeding-site site-1" onclick="checkBreedingSite('water-barrel', true)">🪣</div>
-                            <div class="breeding-site site-2" onclick="checkBreedingSite('plant-saucers', true)">🪴</div>
-                            <div class="breeding-site site-3" onclick="checkBreedingSite('roof-gutter', true)">🏠</div>
-                            <div class="breeding-site site-4" onclick="checkBreedingSite('old-bucket', true)">🪣</div>
-                            <div class="breeding-site site-5" onclick="checkBreedingSite('flower-vase', true)">🏺</div>
-                            <div class="breeding-site site-6" onclick="checkBreedingSite('tire-planter', true)">🛞</div>
+                            <div class="breeding-site site-1" onclick="checkBreedingSite(event, 'water-barrel', true)">🪣</div>
+                            <div class="breeding-site site-2" onclick="checkBreedingSite(event, 'plant-saucers', true)">🪴</div>
+                            <div class="breeding-site site-3" onclick="checkBreedingSite(event, 'roof-gutter', true)">🏠</div>
+                            <div class="breeding-site site-4" onclick="checkBreedingSite(event, 'old-bucket', true)">🪣</div>
+                            <div class="breeding-site site-5" onclick="checkBreedingSite(event, 'flower-vase', true)">🏺</div>
+                            <div class="breeding-site site-6" onclick="checkBreedingSite(event, 'tire-planter', true)">🛞</div>
                             
                             <!-- Incorrect sites -->
-                            <div class="breeding-site site-7" onclick="checkBreedingSite('tree-base', false)">🌳</div>
-                            <div class="breeding-site site-8" onclick="checkBreedingSite('dry-garden', false)">🌿</div>
-                            <div class="breeding-site site-9" onclick="checkBreedingSite('house-wall', false)">🧱</div>
-                            <div class="breeding-site site-10" onclick="checkBreedingSite('flowing-drain', false)">🌊</div>
-                            <div class="breeding-site site-11" onclick="checkBreedingSite('solid-pavement', false)">🪨</div>
-                            <div class="breeding-site site-12" onclick="checkBreedingSite('hanging-clothes', false)">👕</div>
+                            <div class="breeding-site site-7" onclick="checkBreedingSite(event, 'tree-base', false)">🌳</div>
+                            <div class="breeding-site site-8" onclick="checkBreedingSite(event, 'dry-garden', false)">🌿</div>
+                            <div class="breeding-site site-9" onclick="checkBreedingSite(event, 'house-wall', false)">🧱</div>
+                            <div class="breeding-site site-10" onclick="checkBreedingSite(event, 'flowing-drain', false)">🌊</div>
+                            <div class="breeding-site site-11" onclick="checkBreedingSite(event, 'solid-pavement', false)">🪨</div>
+                            <div class="breeding-site site-12" onclick="checkBreedingSite(event, 'hanging-clothes', false)">👕</div>
                         </div>
 
                         <div class="help-panel" id="breeding-help">
@@ -4442,20 +3521,20 @@
                             <div class="compound-title">🏠 मेन्साह परिवार परिसर</div>
                             
                             <!-- Correct breeding sites -->
-                            <div class="breeding-site site-1" onclick="checkBreedingSite('water-barrel', true)">🪣</div>
-                            <div class="breeding-site site-2" onclick="checkBreedingSite('plant-saucers', true)">🪴</div>
-                            <div class="breeding-site site-3" onclick="checkBreedingSite('roof-gutter', true)">🏠</div>
-                            <div class="breeding-site site-4" onclick="checkBreedingSite('old-bucket', true)">🪣</div>
-                            <div class="breeding-site site-5" onclick="checkBreedingSite('flower-vase', true)">🏺</div>
-                            <div class="breeding-site site-6" onclick="checkBreedingSite('tire-planter', true)">🛞</div>
+                            <div class="breeding-site site-1" onclick="checkBreedingSite(event, 'water-barrel', true)">🪣</div>
+                            <div class="breeding-site site-2" onclick="checkBreedingSite(event, 'plant-saucers', true)">🪴</div>
+                            <div class="breeding-site site-3" onclick="checkBreedingSite(event, 'roof-gutter', true)">🏠</div>
+                            <div class="breeding-site site-4" onclick="checkBreedingSite(event, 'old-bucket', true)">🪣</div>
+                            <div class="breeding-site site-5" onclick="checkBreedingSite(event, 'flower-vase', true)">🏺</div>
+                            <div class="breeding-site site-6" onclick="checkBreedingSite(event, 'tire-planter', true)">🛞</div>
                             
                             <!-- Incorrect sites -->
-                            <div class="breeding-site site-7" onclick="checkBreedingSite('tree-base', false)">🌳</div>
-                            <div class="breeding-site site-8" onclick="checkBreedingSite('dry-garden', false)">🌿</div>
-                            <div class="breeding-site site-9" onclick="checkBreedingSite('house-wall', false)">🧱</div>
-                            <div class="breeding-site site-10" onclick="checkBreedingSite('flowing-drain', false)">🌊</div>
-                            <div class="breeding-site site-11" onclick="checkBreedingSite('solid-pavement', false)">🪨</div>
-                            <div class="breeding-site site-12" onclick="checkBreedingSite('hanging-clothes', false)">👕</div>
+                            <div class="breeding-site site-7" onclick="checkBreedingSite(event, 'tree-base', false)">🌳</div>
+                            <div class="breeding-site site-8" onclick="checkBreedingSite(event, 'dry-garden', false)">🌿</div>
+                            <div class="breeding-site site-9" onclick="checkBreedingSite(event, 'house-wall', false)">🧱</div>
+                            <div class="breeding-site site-10" onclick="checkBreedingSite(event, 'flowing-drain', false)">🌊</div>
+                            <div class="breeding-site site-11" onclick="checkBreedingSite(event, 'solid-pavement', false)">🪨</div>
+                            <div class="breeding-site site-12" onclick="checkBreedingSite(event, 'hanging-clothes', false)">👕</div>
                         </div>
 
                         <div class="help-panel" id="breeding-help">
@@ -4558,33 +3637,35 @@
             }, 5000);
         }
 
-        // Check breeding site - MOSQUITO BREEDING GAME
-        function checkBreedingSite(siteId, isCorrect) {
-            const siteElement = event.target;
-            
+        // Check breeding site - show immediate explanation on click
+        function checkBreedingSite(evt, siteId, isCorrect) {
+            const siteElement = evt.currentTarget;
+
             if (siteElement.classList.contains('correct') || siteElement.classList.contains('incorrect')) {
                 return;
             }
-            
+
             // Increment attempts counter
             breedingAttempts++;
-            
+
             if (isCorrect) {
                 siteElement.classList.add('correct');
                 foundBreedingSites.push(siteId);
                 document.getElementById('sites-found').textContent = foundBreedingSites.length;
-                
-                // Play success sound
+
+                // Success sound and particles
                 playSound('correct');
-                
-                // Create particle effect
                 const rect = siteElement.getBoundingClientRect();
                 createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 8);
-                
+
+                // Immediate explanation
+                const msg = breedingExplanations[siteId]?.correct || 'Correct: this retains standing water.';
+                showExplanation(siteElement, `✅ ${msg}`, 'success');
+
                 // Update score
                 const currentScore = foundBreedingSites.length * 10;
                 document.getElementById('current-score').textContent = currentScore;
-                
+
                 if (foundBreedingSites.length >= 6) {
                     document.getElementById('homes-submit').disabled = false;
                     playSound('complete');
@@ -4592,18 +3673,16 @@
                 }
             } else {
                 siteElement.classList.add('incorrect');
-                
-                // Play error sound
                 playSound('incorrect');
-                
-                // Show help message after first wrong attempt
+
+                // Immediate explanation
+                const msg = breedingExplanations[siteId]?.wrong || 'Not a breeding site: no standing water present.';
+                showExplanation(siteElement, `❌ ${msg}`, 'error');
+
+                // Reveal help panel on first mistake
                 if (!breedingHelpShown) {
                     document.getElementById('breeding-help').classList.add('show');
                     breedingHelpShown = true;
-                    const helpMessage = gameState.currentLanguage === 'en' ?
-                        '🎓 Scientific guidance is now available! Use the hint system to find the remaining breeding sites.' :
-                        '🎓 वैज्ञानिक मार्गदर्शन अब उपलब्ध है! शेष प्रजनन स्थलों को खोजने के लिए संकेत प्रणाली का उपयोग करें।';
-                    alert(helpMessage);
                 }
             }
         }
@@ -4662,7 +3741,6 @@
                     <p>🏆 ${lang === 'en' ? 'Performance:' : 'प्रदर्शन:'} ${translatePerformance(performance, lang)}</p>
                     <p>📈 ${lang === 'en' ? 'Points earned:' : 'अर्जित अंक:'} ${points} ${attemptPenalty > 0 ? `(${lang === 'en' ? 'penalty applied' : 'जुर्माना लगाया गया'})` : ''}</p>
                     <p>💚 ${lang === 'en' ? 'Lives protected:' : 'संरक्षित जीवन:'} ${lives}</p>
-                    <p>🎯 ${lang === 'en' ? 'Efficiency Score:' : 'दक्षता स्कोर:'} ${foundBreedingSites.length * 10} ${lang === 'en' ? 'points' : 'अंक'}</p>
                 </div>
             `;
             homesFeedback.classList.add('show');
@@ -4741,25 +3819,6 @@
             updateStats();
         }
 
-        // Test function to manually show completion modal
-        function testCompletionModal() {
-            console.log('Testing completion modal...');
-            gameState.livesProtected = 50;
-            gameState.knowledgePoints = 200;
-            gameState.completedMissions = ['clinic', 'school', 'market', 'homes'];
-            showGameCompletion();
-        }
-        
-        // Make test function available globally
-        window.testCompletionModal = testCompletionModal;
-        
-        // Also add a keyboard shortcut for testing
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 'c') {
-                testCompletionModal();
-            }
-        });
-
         // Show game completion
         function showGameCompletion() {
             console.log('showGameCompletion called');
@@ -4783,167 +3842,6 @@
             } else {
                 console.error('Completion modal element not found!');
             }
-            
-            // Add Play Again button to mission panel
-            addPlayAgainButton();
-        }
-
-        // Add Play Again button to mission panel
-        function addPlayAgainButton() {
-            const missionPanel = document.querySelector('.mission-panel');
-            if (missionPanel && !document.getElementById('play-again-btn')) {
-                const playAgainBtn = document.createElement('div');
-                playAgainBtn.id = 'play-again-btn';
-                playAgainBtn.style.cssText = `
-                    text-align: center;
-                    margin-top: 2rem;
-                    padding: 1rem;
-                    background: linear-gradient(135deg, #f0f9ff, #dbeafe);
-                    border-radius: 16px;
-                    border: 2px solid var(--hero-blue);
-                `;
-                
-                const lang = gameState.currentLanguage;
-                playAgainBtn.innerHTML = `
-                    <h3 style="color: var(--hero-blue); margin-bottom: 1rem; font-family: 'Fredoka', sans-serif;">
-                        ${lang === 'en' ? '🎉 All Missions Complete!' : '🎉 सभी मिशन पूर्ण!'}
-                    </h3>
-                    <p style="margin-bottom: 1rem; color: var(--neutral-slate);">
-                        ${lang === 'en' ? 
-                            'Congratulations! You\'ve successfully protected Nyanja Village from malaria!' : 
-                            'बधाई हो! आपने न्यांजा गांव को मलेरिया से सफलतापूर्वक बचाया है!'}
-                    </p>
-                    <button class="action-btn" onclick="restartGame()" style="background: var(--victory-green); font-size: 1.1rem; padding: 1rem 2rem;">
-                        ${lang === 'en' ? '🎮 Play Again' : '🎮 फिर से खेलें'}
-                    </button>
-                `;
-                
-                missionPanel.appendChild(playAgainBtn);
-            }
-        }
-
-        // Restart game
-        function restartGame() {
-            // Reset game state
-            gameState.livesProtected = 0;
-            gameState.knowledgePoints = 0;
-            gameState.missionsCompleted = 0;
-            gameState.completedMissions = [];
-            
-            // Reset mission tracking
-            selectedSymptoms = [];
-            protectedStudents = [];
-            selectedEducationMethods = [];
-            foundBreedingSites = [];
-            breedingHelpShown = false;
-            breedingAttempts = 0;
-            
-            // Reset UI - enable only first mission
-            const locations = ['clinic', 'school', 'market', 'homes'];
-            locations.forEach((locationId, index) => {
-                const location = document.getElementById(locationId + '-location') || document.querySelector('.' + locationId);
-                if (location) {
-                    location.classList.remove('completed');
-                    if (index === 0) {
-                        location.classList.remove('disabled');
-                    } else {
-                        location.classList.add('disabled');
-                    }
-                    const badge = location.querySelector('.priority-badge');
-                    if (badge) {
-                        badge.style.display = index === 0 ? 'flex' : 'none';
-                    }
-                }
-            });
-            
-            // Reset mission text
-            const missionTexts = {
-                en: 'Visit the Emergency Clinic where a critically ill 8-year-old patient needs immediate medical diagnosis. Lives depend on your expertise!',
-                hi: 'आपातकालीन क्लिनिक में जाएं जहां एक गंभीर रूप से बीमार 8 वर्षीय रोगी को तत्काल चिकित्सा निदान की आवश्यकता है। जीवन आपकी विशेषज्ञता पर निर्भर है!'
-            };
-            
-            const textElement = gameState.currentLanguage === 'en' ? 
-                document.getElementById('current-mission-text') : 
-                document.getElementById('current-mission-text-hi');
-            
-            if (textElement) {
-                textElement.textContent = missionTexts[gameState.currentLanguage];
-            }
-            
-            // Close completion modal
-            document.getElementById('completion-modal').classList.remove('active');
-            
-            // Update stats
-            updateStats();
-        }
-
-        // Reset game completely (for GitHub hosting issues)
-        function resetGame() {
-            // Clear all localStorage
-            localStorage.removeItem('malariaHeroesProgress');
-            localStorage.removeItem('malariaHeroesTutorialComplete');
-            
-            // Reset game state
-            gameState = {
-                currentLanguage: gameState.currentLanguage, // Preserve language choice
-                livesProtected: 0,
-                knowledgePoints: 0,
-                missionsCompleted: 0,
-                currentMission: 'clinic',
-                completedMissions: []
-            };
-            
-            // Reset mission tracking variables
-            selectedSymptoms = [];
-            protectedStudents = [];
-            selectedEducationMethods = [];
-            foundBreedingSites = [];
-            breedingHelpShown = false;
-            breedingAttempts = 0;
-            
-            // Reset UI
-            document.getElementById('completion-modal').classList.remove('active');
-            
-            // Remove Play Again button if it exists
-            const playAgainBtn = document.getElementById('play-again-btn');
-            if (playAgainBtn) {
-                playAgainBtn.remove();
-            }
-            
-            // Reset locations
-            document.querySelectorAll('.location').forEach(location => {
-                location.classList.remove('completed');
-                if (!location.classList.contains('clinic')) {
-                    location.classList.add('disabled');
-                    const badge = location.querySelector('.priority-badge');
-                    if (badge) badge.style.display = 'none';
-                }
-            });
-            
-            // Reset mission text
-            const initialTexts = {
-                en: 'Visit the Emergency Clinic where a critically ill 8-year-old patient needs immediate medical diagnosis. Lives depend on your expertise!',
-                hi: 'आपातकालीन क्लिनिक में जाएं जहां एक गंभीर रूप से बीमार 8 वर्षीय रोगी को तत्काल चिकित्सा निदान की आवश्यकता है। जीवन आपकी विशेषज्ञता पर निर्भर है!'
-            };
-            
-            const textElement = gameState.currentLanguage === 'en' ? 
-                document.getElementById('current-mission-text') : 
-                document.getElementById('current-mission-text-hi');
-            
-            if (textElement) {
-                textElement.textContent = initialTexts[gameState.currentLanguage];
-            }
-            
-            // Update stats and UI
-            updateStats();
-            updateUI();
-            
-            // Show tutorial
-            setTimeout(() => {
-                startTutorial();
-            }, 500);
-            
-            console.log('Game reset successfully');
         }
 
         // FIXED: Certificate functions work properly now
@@ -5031,12 +3929,6 @@
             // Reset UI
             document.getElementById('completion-modal').classList.remove('active');
             
-            // Remove Play Again button if it exists
-            const playAgainBtn = document.getElementById('play-again-btn');
-            if (playAgainBtn) {
-                playAgainBtn.remove();
-            }
-            
             // Reset locations
             document.querySelectorAll('.location').forEach(location => {
                 location.classList.remove('completed');
@@ -5063,7 +3955,70 @@
             updateStats();
         }
 
-        // Initialize game on page load
+        // Reset game completely (for GitHub hosting issues)
+        function resetGame() {
+            // Clear all localStorage
+            localStorage.removeItem('malariaHeroesProgress');
+            localStorage.removeItem('malariaHeroesTutorialComplete');
+            
+            // Reset game state
+            gameState = {
+                currentLanguage: gameState.currentLanguage, // Preserve language choice
+                livesProtected: 0,
+                knowledgePoints: 0,
+                missionsCompleted: 0,
+                currentMission: 'clinic',
+                completedMissions: []
+            };
+            
+            // Reset mission tracking variables
+            selectedSymptoms = [];
+            protectedStudents = [];
+            selectedEducationMethods = [];
+            foundBreedingSites = [];
+            breedingHelpShown = false;
+            breedingAttempts = 0;
+            
+            // Reset UI
+            document.getElementById('completion-modal').classList.remove('active');
+            
+            // Reset locations
+            document.querySelectorAll('.location').forEach(location => {
+                location.classList.remove('completed');
+                if (!location.classList.contains('clinic')) {
+                    location.classList.add('disabled');
+                    const badge = location.querySelector('.priority-badge');
+                    if (badge) badge.style.display = 'none';
+                }
+            });
+            
+            // Reset mission text
+            const initialTexts = {
+                en: 'Visit the Emergency Clinic where a critically ill 8-year-old patient needs immediate medical diagnosis. Lives depend on your expertise!',
+                hi: 'आपातकालीन क्लिनिक में जाएं जहां एक गंभीर रूप से बीमार 8 वर्षीय रोगी को तत्काल चिकित्सा निदान की आवश्यकता है। जीवन आपकी विशेषज्ञता पर निर्भर है!'
+            };
+            
+            const textElement = gameState.currentLanguage === 'en' ? 
+                document.getElementById('current-mission-text') : 
+                document.getElementById('current-mission-text-hi');
+            
+            if (textElement) {
+                textElement.textContent = initialTexts[gameState.currentLanguage];
+            }
+            
+            // Update stats and UI
+            updateStats();
+            updateUI();
+            
+            // Show tutorial
+            setTimeout(() => {
+                startTutorial();
+            }, 500);
+            
+            console.log('Game reset successfully');
+        }
+
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
             initializeGame();
             console.log('🌍 Malaria Heroes - Professional Edition Loaded!');
